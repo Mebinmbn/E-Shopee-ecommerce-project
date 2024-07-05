@@ -1,0 +1,165 @@
+<!--================ Register Box Area =================-->
+<section class="login_box_area section-margin my-5">
+  <div class="container">
+    <div class="row">
+      <!-- <div class="col-lg-6">
+        <div class="login_box_img bg-body-success">
+          <div class="hover">
+            <h4>Already have an account?</h4>
+            <p>
+              There are advances being made in science and technology everyday,
+              and a good example of this is the
+            </p>
+            <a class="btn btn-outline-light" href="/login">Login Now</a>
+          </div>
+        </div>
+      </div> -->
+      <div class="col-lg-6 mx-auto">
+        <div class="login_form_inner register_form_inner bg-body-secondary">
+          <h3 class="my-0 pb-3 mb-2">Create an account</h3>
+          <form
+            class="row login_form"
+            action="/register"
+            method="POST"
+            id="register_form"
+          >
+            <div class="col-md-12 form-group">
+              <input
+                type="text"
+                class="form-control"
+                id="username"
+                name="username"
+                placeholder="Username"
+                onfocus="this.placeholder = ''"
+                onblur="this.placeholder = 'Username'"
+              />
+              <small></small>
+            </div>
+            <div class="col-md-12">
+              <div class="row">
+                <div class="col form-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="firstName"
+                    name="firstName"
+                    placeholder="First Name"
+                    onfocus="this.placeholder = ''"
+                    onblur="this.placeholder = 'First Name'"
+                  />
+                  <small></small>
+                </div>
+                <div class="col form-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="lastName"
+                    name="lastName"
+                    placeholder="Last Name"
+                    onfocus="this.placeholder = ''"
+                    onblur="this.placeholder = 'Last Name'"
+                  />
+                  <small></small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 form-group">
+              <input
+                type="text"
+                class="form-control"
+                id="email"
+                name="email"
+                placeholder="Email Address"
+                onfocus="this.placeholder = ''"
+                onblur="this.placeholder = 'Email Address'"
+              />
+              <small></small>
+            </div>
+            <!-- <div class="col-md-12 form-group">
+              <input
+                type="text"
+                class="form-control"
+                id="referral"
+                name="referral"
+                placeholder="Referral Code (optional)"
+                onfocus="this.placeholder = ''"
+                onblur="this.placeholder = 'Referral Code'"
+                value="<%- locals.referralCode ? locals.referralCode : '' %>"
+              />
+              <small></small>
+            </div> -->
+            <div class="col-md-12 form-group">
+              <div class="d-flex align-items-center">
+                <input
+                  type="password"
+                  class="form-control"
+                  id="password"
+                  name="password"
+                  placeholder="Password"
+                  onfocus="this.placeholder = ''"
+                  onblur="this.placeholder = 'Password'"
+                />
+                <i
+                  class="bi bi-eye-slash"
+                  id="togglePassword"
+                  style="
+                    position: relative;
+                    z-index: 8;
+                    left: -30px;
+                    width: 0%;
+                    cursor: pointer;
+                  "
+                ></i>
+              </div>
+              <small></small>
+            </div>
+            <div class="col-md-12 form-group">
+              <div class="d-flex align-items-center">
+                <input
+                  type="password"
+                  class="form-control password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  placeholder="Confirm Password"
+                  onfocus="this.placeholder = ''"
+                  onblur="this.placeholder = 'Confirm Password'"
+                />
+                <i
+                  class="bi bi-eye-slash"
+                  id="togglePasswordConfirm"
+                  style="
+                    position: relative;
+                    z-index: 8;
+                    left: -30px;
+                    width: 0%;
+                    cursor: pointer;
+                  "
+                ></i>
+              </div>
+              <small></small>
+            </div>
+
+            <div class="col-md-12 form-group">
+              <button
+                type="submit"
+                value="submit"
+                class="btn btn-outline-primary w-100"
+              >
+                Register
+              </button>
+            </div>
+          </form>
+
+          <div class="hover py-5">
+            <h4>Already have an account?</h4>
+            <br />
+            <a class="btn btn-outline-info" href="/login">Login Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--================End Register Box Area =================-->
+
+<script src="/javascripts/registerValidation.js"></script>

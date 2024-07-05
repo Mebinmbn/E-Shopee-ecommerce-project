@@ -1,0 +1,516 @@
+<section class="product-details container">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-7 pt-4 order-2 order-lg-1">
+        <div class="row">
+          <div class="d-none d-md-block col-md-2 pe-0">
+            <div class="owl-thumbs" data-slider-id="1">
+              <button class="owl-thumb-item detail-thumb-item mb-3">
+                <img
+                  class="img-fluid"
+                  src="/uploads/product-images/crp/<%- product.primary_image.name %>"
+                  alt="Modern Jacket 0"
+                />
+              </button>
+              <% product.secondary_images.forEach((element) => { %>
+              <button class="owl-thumb-item detail-thumb-item mb-3">
+                <img
+                  class="img-fluid"
+                  src="/uploads/product-images/crp/<%- element.name %>"
+                  alt="Modern Jacket 0"
+                  element.secondary_images
+                />
+              </button>
+              <% }) %>
+            </div>
+          </div>
+          <div class="col-12 col-md-10 detail-carousel">
+            <% if (product.onOffer) { %>
+            <div class="ribbon ribbon-info">
+              On offer <%- product.offerDiscountRate %>%
+            </div>
+            <% } %>
+            <!-- <div class="ribbon ribbon-primary">Sale</div> -->
+            <div
+              class="owl-carousel detail-slider owl-theme owl-dots-modern"
+              data-slider-id="1"
+            >
+              <div
+                class="item"
+                data-toggle="zoom"
+                data-src="/uploads/product-images/crp/<%- product.primary_image.name %>"
+              >
+                <a
+                  class="glightbox"
+                  href="/uploads/product-images/crp/<%- product.primary_image.name %>"
+                  data-title="<%- product.product_name %>"
+                  data-gallery="product-gallery"
+                >
+                  <img
+                    class="img-fluid"
+                    src="/uploads/product-images/crp/<%- product.primary_image.name %>"
+                    alt="<%- product.name %>"
+                  />
+                </a>
+              </div>
+              <% product.secondary_images.forEach(element => { %>
+              <div class="item">
+                <a
+                  class="glightbox"
+                  href="/uploads/product-images/crp/<%- element.name %>"
+                  data-title="<%- product.product_name %>"
+                  data-gallery="product-gallery"
+                  ><img
+                    class="img-fluid"
+                    src="/uploads/product-images/crp/<%- element.name %>"
+                    alt="<%- product.product_name %>"
+                /></a>
+              </div>
+              <% }) %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5 ps-lg-4 order-1 order-lg-2">
+        <ul class="breadcrumb undefined">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item"><a href="/shop">Shop</a></li>
+          <li class="breadcrumb-item active"><%- product.product_name %></li>
+        </ul>
+        <h1 class="mb-4"><%- product.product_name %></h1>
+        <div
+          class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-between mb-4"
+        >
+          <ul class="list-inline mb-2 mb-sm-0">
+            <li class="list-inline-item h4 fw-light mb-0">
+              <% if (!product.onOffer) { %> ₹<%- product.sellingPrice %> <% }
+              else { %> ₹<%- product.offerDiscountPrice %> <% } %>
+            </li>
+            <li class="list-inline-item text-muted fw-light">
+              <% if (!product.onOffer) { %>
+              <del> ₹<%- product.actualPrice %> </del>
+              <% } else { %>
+              <del> ₹<%- product.sellingPrice %> </del>
+              <% } %>
+            </li>
+          </ul>
+          <div class="d-flex align-items-center">
+            <ul class="list-inline me-2 mb-0">
+              <li class="list-inline-item me-0">
+                <i class="bi bi-star text-primary"></i>
+              </li>
+              <li class="list-inline-item me-0">
+                <i class="bi bi-star text-primary"></i>
+              </li>
+              <li class="list-inline-item me-0">
+                <i class="bi bi-star text-primary"></i>
+              </li>
+              <li class="list-inline-item me-0">
+                <i class="bi bi-star text-primary"></i>
+              </li>
+              <li class="list-inline-item me-0">
+                <i class="bi bi-star text-gray-300"></i>
+              </li>
+            </ul>
+            <span class="text-muted text-uppercase text-sm"
+              ><%= product.reviews.length %> reviews</span
+            >
+          </div>
+        </div>
+        <p class="mb-4 text-muted"><%- product.description %></p>
+        <div class="row">
+          <div class="col-12 detail-option mb-3">
+            <h6 class="detail-option-heading">
+              Colour <span>(required)</span>
+            </h6>
+            <ul class="list-inline mb-0 colours-wrapper">
+              <% let renderedColors = {}; %> <% let index = 0; %> <%
+              product.variants.forEach((variant) => { %> <% if
+              (!renderedColors[variant.color.hex]) { %> <%
+              renderedColors[variant.color.hex] = true; %>
+              <li class="list-inline-item">
+                <label
+                  onclick="selectColor('<%= variant.color.hex %>', '<%= index %>')"
+                  class="btn-colour <%= index === 0 ? 'active' : '' %>"
+                  for="colour_<%- variant.color.name %>"
+                  style="background-color: <%- variant.color.hex %>"
+                  data-color-id="<%- variant.color._id %>"
+                >
+                </label>
+                <input
+                  class="input-invisible"
+                  type="radio"
+                  name="colour"
+                  value="value_Blue"
+                  id="colour_<%- variant.color.name %>"
+                  required
+                />
+              </li>
+              <% index++; %> <% } %> <% }) %>
+            </ul>
+          </div>
+          <div class="col-sm-6 col-lg-12 detail-option mb-3">
+            <h6 class="detail-option-heading">Size <span>(required)</span></h6>
+            <div class="size-box">
+              <div class="size-list row justify-content-sm-start"></div>
+            </div>
+          </div>
+          <% if(stock<1) {%>
+          <p class="lead text-danger">OUt Of Stock</p>
+          <% } %>
+          <p class="lead text-danger d-none" id="isOutOfStock"></p>
+          <p class="lead text-warning d-none" id="limitedStock"></p>
+        </div>
+        <ul class="list-inline">
+          <li class="list-inline-item">
+            <button
+              class="btn btn-dark mb-1"
+              onclick="addToCart('<%- product._id %>')"
+            >
+              <i class="bi bi-cart me-2"></i>
+              Add to Cart
+            </button>
+          </li>
+          <li class="list-inline-item">
+            <button
+              class="btn btn-outline-danger mb-1"
+              onclick="addToWishlist('<%- product._id %>')"
+            >
+              <i class="bi bi-heart me-2"></i>
+              Add to wishlist
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="mt-5">
+  <div class="container">
+    <ul class="nav nav-tabs flex-column flex-sm-row" role="tablist">
+      <li class="nav-item">
+        <a
+          class="nav-link detail-nav-link active"
+          data-bs-toggle="tab"
+          href="#description"
+          role="tab"
+          >Description</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link detail-nav-link"
+          data-bs-toggle="tab"
+          href="#additional-information"
+          role="tab"
+          >Additional Information</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link detail-nav-link"
+          data-bs-toggle="tab"
+          href="#reviews"
+          role="tab"
+          >Reviews</a
+        >
+      </li>
+    </ul>
+    <div class="tab-content py-4">
+      <div class="tab-pane active px-3" id="description" role="tabpanel">
+        <%- product.details %>
+      </div>
+      <div class="tab-pane" id="additional-information" role="tabpanel">
+        <div class="row">
+          <div class="col-lg-6">
+            <table class="table text-sm">
+              <tbody>
+                <tr>
+                  <th class="text-uppercase fw-normal border-0">Product #</th>
+                  <td class="text-muted border-0">
+                    <%- product.product_name %>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="text-uppercase fw-normal">Size</th>
+                  <td class="text-muted"><%- product.size %></td>
+                </tr>
+                <tr>
+                  <th class="text-uppercase fw-normal">Actual Price</th>
+                  <td class="text-muted">₹<%- product.actualPrice %></td>
+                </tr>
+                <tr>
+                  <th class="text-uppercase fw-normal">Selling Price</th>
+                  <td class="text-muted">₹<%- product.sellingPrice %></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- <div class="col-lg-6">
+            <table class="table text-sm">
+              <tbody>
+                <tr>
+                  <th class="text-uppercase fw-normal border-0">Weight</th>
+                  <td class="text-muted border-0">dolor sit amet </td>
+                </tr>
+                <tr>
+                  <th class="text-uppercase fw-normal ">Sunt in culpa qui</th>
+                  <td class="text-muted ">Lorem ipsum dolor sit amet </td>
+                </tr>
+                <tr>
+                  <th class="text-uppercase fw-normal ">Product #</th>
+                  <td class="text-muted ">Lorem ipsum dolor sit amet </td>
+                </tr>
+                <tr>
+                  <th class="text-uppercase fw-normal ">Available packaging</th>
+                  <td class="text-muted ">LOLDuis aute irure dolor in reprehenderit </td>
+                </tr>
+              </tbody>
+            </table>
+          </div> -->
+        </div>
+      </div>
+      <div class="tab-pane" id="reviews" role="tabpanel">
+        <div class="row mb-5">
+          <div class="col-lg-10 col-xl-9">
+            <% if (product.reviews && product.reviews.length > 0) { %> <%
+            product.reviews.forEach( review => { %>
+            <div class="review d-flex text-capitalize">
+              <div class="flex-shrink-0 text-center me-4 me-xl-5">
+                <img
+                  class="review-image"
+                  src="/uploads/profile-image/avatar.png"
+                  alt=""
+                /><span class="text-uppercase text-muted"
+                  ><%- review.date.toDateString() %></span
+                >
+              </div>
+              <div>
+                <h5 class="mt-2 mb-1"><%- review.user?.name %></h5>
+                <div class="mb-2">
+                  <% for( let index = 0; index < review.rating; index++ ) { %>
+                  <i class="bi bi-star-fill text-warning"></i>
+                  <% } %> <% if (review.rating < 5) { %> <% for( let index = 0;
+                  index < 5 - review.rating; index++ ) { %>
+                  <i class="bi bi-star text-warning"></i>
+                  <% } %> <% } %>
+                </div>
+                <p class="text-muted fw-bold lead"><%- review?.title %></p>
+                <p class="text-muted fw-semibold fs-6 lead">
+                  <%- review.comment %>
+                </p>
+              </div>
+            </div>
+            <% }) %> <% } else { %>
+            <div
+              class="review d-flex justify-content-center text-capitalize text-center"
+            >
+              <div
+                class="text-center block-header text-muted fs-3 text-warning"
+              >
+                No User reviews yet
+              </div>
+            </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="my-5">
+  <div class="container">
+    <header class="text-center">
+      <h6 class="text-uppercase mb-5">You might also like</h6>
+    </header>
+    <div class="row text-capitalize">
+      <% if (related && related.length > 0) { %> <% related.forEach((prd) => {
+      %>
+      <!-- product-->
+      <div class="col-lg-2 col-md-4 col-6">
+        <div class="product">
+          <div class="product-image">
+            <!-- <div class="ribbon ribbon-info">Fresh</div> -->
+            <img
+              class="img-fluid"
+              src="/uploads/product-images/crp/<%= prd.primary_image.name %>"
+              alt="product"
+            />
+            <!-- <div class="product-hover-overlay">
+              <a
+                class="product-hover-overlay-link"
+                href="/shop/product/<%= prd._id %>"
+              ></a>
+              <div class="product-hover-overlay-buttons">
+                <a class="btn btn-dark btn-buy" href=""
+                  ><i class="fa-search fa"></i
+                  ><span class="btn-buy-label ms-2">View</span></a
+                >
+              </div>
+            </div> -->
+          </div>
+          <div class="py-2">
+            <p class="text-muted text-sm mb-1"><%= prd.category.name %></p>
+            <h3 class="h6 text-uppercase mb-1">
+              <a class="text-dark" href="/shop/product/<%= prd._id %>"
+                ><%= prd.product_name %></a
+              >
+            </h3>
+            <% if (prd.onOffer) { %>
+            <span class="text-muted">₹<%= prd.offerDiscountPrice %></span>
+            <% } else { %>
+            <span class="text-muted">₹<%= prd.sellingPrice %></span>
+            <% } %>
+          </div>
+        </div>
+      </div>
+      <!-- /product-->
+      <% }) %> <% } %>
+    </div>
+  </div>
+</section>
+
+<script defer>
+  const addToCart = async (productId) => {
+    const variantId = document.querySelector('.size-option.active').getAttribute('data-variant-id');
+    const color = document.querySelector('.size-option.active').getAttribute('data-color');
+    const size = document.querySelector('.size-option.active').getAttribute('data-size');
+
+    try {
+      const response = await fetch(`/user/add-to-cart/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          productId,
+          variantId,
+          color,
+          size,
+        })
+      });
+
+      console.log(response);
+
+      if (response.redirected) {
+        window.location.href = response.url;
+        return;
+      }
+
+      if (response.status === 401) {
+        Swal.fire({
+          title: 'Warning!',
+          text: 'Please log in to add items to your cart.',
+          icon: 'warning',
+          confirmButtonText: 'Log In'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = '/login'; // Redirect to login page
+          }
+        });
+        return; // Exit the function after handling the unauthenticated case
+      }
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Network response was not ok.');
+      }
+
+      const data = await response.json();
+      let cartCount = document.getElementById("cartCount");
+      if (cartCount) {
+        cartCount.innerText = data.count;
+      }
+      Swal.fire({
+        icon: "success",
+        title: "Added to Cart",
+        text: "Your product has been added to the cart.",
+        confirmButtonText: "Continue Shopping",
+      });
+
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.message, // Display the actual error message
+      });
+    }
+  };
+
+
+  var productData = <%- JSON.stringify(product) %>; // Assuming product data is passed to the view
+
+  function selectColor(colorHex) {
+    document.querySelectorAll('.btn-colour').forEach(function(el) {
+      el.classList.remove('selected-color');
+    });
+    document.querySelector(`.btn-colour[style="background-color: ${colorHex}"]`).classList.add('selected-color');
+
+    var sizesForColor = productData.variants.filter(function(variant) {
+      return variant.color.hex === colorHex;
+    });
+
+    var firstSize = null;
+
+    var sizeList = document.querySelector('.size-list');
+    sizeList.innerHTML = '';
+    var renderedSizes = {};
+    sizesForColor.forEach((variant, index) => {
+      // console.log(variant);
+      if (!renderedSizes[variant.size.value]) {
+        renderedSizes[variant.size.value] = true;
+        var li = document.createElement('label');
+        li.classList.add('col-2', 'btn', 'btn-sm', 'btn-outline-secondary', 'detail-option-btn-label')
+        li.innerHTML = `
+                ${variant.size.value}
+                <input
+                  class="input-invisible"
+                  type="radio"
+                  name="size"
+                  value="value_${variant.size._id}"
+                  id="size_${variant.size.value}"
+                  required
+                />
+               `
+        //  li.innerText = variant.size.value;
+        li.classList.add('size-option');
+        li.setAttribute('data-variant-id', variant._id); // Store the variant ID
+        li.setAttribute('data-color', variant.color._id); // Store the color
+        li.setAttribute('data-size', variant.size._id); // Store the size
+
+        console.log(variant);
+        if (variant.isOutOfStock) {
+          li.setAttribute('data-is-out-of-stock', 'true');
+        }
+
+        li.addEventListener('click', function() {
+          document.querySelectorAll('.size-option').forEach(function(el) {
+            el.classList.remove('active');
+          });
+          li.classList.add('active');
+        });
+
+        sizeList.appendChild(li);
+
+
+
+
+        if (index === 0) {
+          firstSize = li
+        }
+      }
+    });
+
+    if (firstSize) {
+      firstSize.click();
+    }
+  }
+
+
+
+  // Initial setup to select the first color if available
+  if (productData.variants.length > 0) {
+    selectColor(productData.variants[0].color.hex);
+  }
+</script>

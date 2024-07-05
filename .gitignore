@@ -1,0 +1,5 @@
+.env
+public/uploads/*
+public/img/*
+node_modules/
+jspm_packages/
