@@ -69,4 +69,12 @@ router.get(
   cartController.decrementCartItem
 );
 
+/**
+ * User Wishlist
+ */
+
+router.get("/wishlist", userController.getWishlist);
+router.post("/add-to-wishlist", userController.addToWishlist);
+router.delete("/remove-from-wishlist", userController.removeFromWishlist);
+
 module.exports = router;

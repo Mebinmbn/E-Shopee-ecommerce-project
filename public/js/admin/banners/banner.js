@@ -1,93 +1,102 @@
-$(document).ready(function () {
-  $("#banner_image").on("change", (e) => {
-    let file = e.target.files[0];
-    if (file) {
-      // Create a new FileReader to read the selected image file
-      var reader = new FileReader();
-      reader.onload = function (event) {
-        // Set the source of the image element to the selected file
-        $("#banner_prev").attr("src", event.target.result);
-
-        // Store the base64 string in the hidden input
-        $("#cropped_banner").val(event.target.result);
-
-        // Show the button group
-        $(".button-grp").show();
-
-        // Show success alert
-        Swal.fire({
-          title: "Success!",
-          text: "Your image has been selected.",
-          icon: "success",
-        });
-      };
-      reader.readAsDataURL(file);
-    }
-  });
-
-  $("#new-banner").validate({
-    rules: {
-      banner_name: {
-        required: true,
-        maxlength: 20,
-      },
-      banner_image: {
-        required: true,
-      },
-      reference: {
-        required: true,
-      },
-    },
-    submitHandler: function (form) {
-      Swal.fire({
-        title: "Are you sure?",
-        text: "You want to add a new Banner?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#0061bc",
-        cancelButtonColor: "rgb(128, 128, 128)",
-        confirmButtonText: "Yes",
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          try {
-            const formData = new FormData(form);
-            const base64String =
-              document.getElementById("cropped_banner").value;
-            const base64Data = base64String.split(",")[1];
-            const binaryData = atob(base64Data);
-            const uint8Array = new Uint8Array(binaryData.length);
-            for (let i = 0; i < binaryData.length; i++) {
-              uint8Array[i] = binaryData.charCodeAt(i);
-            }
-            const blob = new Blob([uint8Array], {
-              type: "image/png",
-            });
-            const file = new File([blob], "image.png", {
-              type: "image/png",
-            });
-            formData.append("banner_image", file);
-
-            let res = await fetch("/admin/banners/add-banner", {
-              method: "POST",
-              body: formData,
-            });
-            let data = await res.json();
-            if (data.success) {
-              Swal.fire(
-                "Created!",
-                "New banner has been created successfully.",
-                "success"
-              ).then(() => location.assign("/admin/banners"));
-            } else {
-              throw new Error(data.message);
-            }
-          } catch (e) {
-            Swal.fire("Error!", e.message, "error");
-          }
-        }
+// new-banner
+$("#banner_image").on("change", (e) => {
+  let container = document.getElementById("banner-crp-container");
+  container.style.display = "block";
+  let image = document.getElementById("bannerIMG");
+  let file = e.target.files[0];
+  $(".button-grp").hide();
+  if (file) {
+    // Create a new FileReader to read the selected image file
+    var reader = new FileReader(file);
+    reader.onload = function (event) {
+      // Set the source of the image element in the Cropper container
+      document.getElementById("bannerIMG").src = event.target.result;
+      // Initialize Cropper.js with the updated image source
+      let cropper = new Cropper(image, {
+        aspectRatio: 16 / 5,
+        viewMode: 0,
+        autoCrop: true,
+        background: false,
       });
+
+      $("#cropImageBtn").on("click", function () {
+        var cropedImg = cropper.getCroppedCanvas();
+        if (cropedImg) {
+          cropedImg = cropedImg.toDataURL("image/png");
+          document.getElementById("banner_prev").src = cropedImg;
+          document.getElementById("cropped_banner").value = cropedImg;
+          container.style.display = "none";
+          document.getElementById("bannerIMG").src = "";
+          $(".button-grp").show();
+        }
+        cropper.destroy();
+      });
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+$("#new-banner").validate({
+  rules: {
+    banner_name: {
+      required: true,
+      maxlength: 20,
     },
-  });
+    banner_image: {
+      required: true,
+    },
+    reference: {
+      required: true,
+    },
+  },
+  submitHandler: function (form) {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You want to add a new Banner?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#0061bc",
+      cancelButtonColor: "rgb(128, 128, 128)",
+      confirmButtonText: "Yes",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const formData = new FormData(form);
+          const base64String = document.getElementById("cropped_banner").value;
+          const base64Data = base64String.split(",")[1];
+          const binaryData = atob(base64Data);
+          const uint8Array = new Uint8Array(binaryData.length);
+          for (let i = 0; i < binaryData.length; i++) {
+            uint8Array[i] = binaryData.charCodeAt(i);
+          }
+          const blob = new Blob([uint8Array], {
+            type: "image/png",
+          });
+          const file = new File([blob], "image.png", {
+            type: "image/png",
+          });
+          formData.append("banner_image", file);
+
+          let res = await fetch("/admin/banners/add-banner", {
+            method: "POST",
+            body: formData,
+          });
+          let data = await res.json();
+          if (data.success) {
+            Swal.fire(
+              "Created!",
+              "New banner has been created successfully.",
+              "success"
+            ).then(() => location.assign("/admin/banners"));
+          } else {
+            throw new Error(data.message);
+          }
+        } catch (e) {
+          Swal.fire("Error!", e.message, "error");
+        }
+      }
+    });
+  },
 });
 
 // edit banner

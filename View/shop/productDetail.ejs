@@ -155,9 +155,11 @@
               <div class="size-list row justify-content-sm-start"></div>
             </div>
           </div>
-          <% if(stock<1) {%>
-          <p class="lead text-danger">OUt Of Stock</p>
-          <% } %>
+          <% if(stock==0) {%>
+          <p class="lead text-danger">Out Of Stock</p>
+          <% } else if(stock <= 5) { %>
+          <p class="lead text-danger">Only <%- stock %> items left</p>
+          <% } %> %>
           <p class="lead text-danger d-none" id="isOutOfStock"></p>
           <p class="lead text-warning d-none" id="limitedStock"></p>
         </div>
@@ -231,10 +233,10 @@
                     <%- product.product_name %>
                   </td>
                 </tr>
-                <tr>
+                <!-- <tr>
                   <th class="text-uppercase fw-normal">Size</th>
                   <td class="text-muted"><%- product.size %></td>
-                </tr>
+                </tr> -->
                 <tr>
                   <th class="text-uppercase fw-normal">Actual Price</th>
                   <td class="text-muted">₹<%- product.actualPrice %></td>

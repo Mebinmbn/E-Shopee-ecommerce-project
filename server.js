@@ -37,10 +37,10 @@ app.set("view engine", "ejs");
 
 // Middlewares
 app.use(morgan("dev"));
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride("_method"));
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 // Session

@@ -1,25 +1,36 @@
 // new-category
 
 $("#category_image").on("change", (e) => {
+  let container = document.getElementById("category-crp-container");
+  container.style.display = "block";
+  let image = document.getElementById("categoryIMG");
   let file = e.target.files[0];
-
+  $(".button-grp").hide();
   if (file) {
     // Create a new FileReader to read the selected image file
     var reader = new FileReader(file);
     reader.onload = function (event) {
       // Set the source of the image element in the Cropper container
-      $("ccategory_prev").src = event.target.result;
+      document.getElementById("categoryIMG").src = event.target.result;
+      // Initialize Cropper.js with the updated image source
+      let cropper = new Cropper(image, {
+        aspectRatio: 1 / 1,
+        viewMode: 0,
+        autoCrop: true,
+        background: false,
+      });
 
-      $("#cropped_category").val(event.target.result);
-
-      // Show the button group
-      $(".button-grp").show();
-
-      // Show success alert
-      Swal.fire({
-        title: "Success!",
-        text: "Your image has been selected.",
-        icon: "success",
+      $("#cropImageBtn").on("click", function () {
+        var cropedImg = cropper.getCroppedCanvas();
+        if (cropedImg) {
+          cropedImg = cropedImg.toDataURL("image/png");
+          document.getElementById("category_prev").src = cropedImg;
+          document.getElementById("cropped_category").value = cropedImg;
+          container.style.display = "none";
+          document.getElementById("categoryIMG").src = "";
+          $(".button-grp").show();
+        }
+        cropper.destroy();
       });
     };
     reader.readAsDataURL(file);

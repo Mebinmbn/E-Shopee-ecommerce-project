@@ -1,9 +1,10 @@
 const User = require("../model/userSchema");
 const Address = require("../model/addressSchema");
+const WishList = require("../model/wishlistSchema");
+const Product = require("../model/productSchema");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const logger = require("../config/logger");
-const crypto = require("crypto");
 
 module.exports = {
   /**
@@ -23,7 +24,7 @@ module.exports = {
     try {
       console.log(req.body);
       const user = await User.findById(req.user.id);
-
+      logger.info(`User ${req.user.email} requested for profile edit`);
       const { firstName, lastName, phone } = req.body;
 
       user.firstName = firstName || user.firstName;
@@ -44,6 +45,41 @@ module.exports = {
     }
   },
 
+  // Password Reset From Profile
+  resetPass: async (req, res) => {
+    try {
+      console.log("Password dtails", req.body);
+      const { oldPassword, newPassword, confirmNewPassword } = await req.body;
+
+      let user = await User.findById(req.user.id);
+      if (user) {
+        let validOldPass = await bcrypt.compare(oldPassword, user.password);
+
+        if (!validOldPass) {
+          req.flash("error", "Invalid Old Password");
+          return res.redirect("/user/profile");
+        }
+
+        if (newPassword !== confirmNewPassword) {
+          req.flash("error", "Passwords do not match");
+          return res.redirect("/user/profile");
+        }
+
+        const hashPwd = await bcrypt.hash(newPassword, 10);
+        user.password = hashPwd;
+        console.log("User details", user);
+        await user.save();
+        console.log(user);
+        req.flash("success", "Password Updated");
+        return res.redirect("/user/profile");
+      }
+    } catch (error) {
+      // return res.status(500).json({ 'error': 'Internal server error' });
+      req.flash("error", "Internal server error");
+      return res.redirect("/user/profile");
+    }
+  },
+
   getAddress: async (req, res) => {
     const address = await Address.find({
       customer_id: req.user.id,
@@ -52,7 +88,7 @@ module.exports = {
 
     console.log(address);
     console.log(req.user);
-
+    logger.info(`User ${req.user.email} requested for user address`);
     const locals = {
       title: "Eshopee - Profile",
     };
@@ -67,6 +103,7 @@ module.exports = {
   addAddress: async (req, res) => {
     console.log(req.body);
     await Address.create(req.body);
+    logger.info(`User ${req.user.email} added new address`);
     req.flash("success", "Address Addedd");
     res.redirect("/user/address");
   },
@@ -138,38 +175,140 @@ module.exports = {
     }
   },
 
-  // Password Reset From Profile
-  resetPass: async (req, res) => {
+  /***
+   * User Wishlist Mangement
+   */
+
+  getWishlist: async (req, res) => {
+    const locals = {
+      title: "E-Shopee - Wishlist",
+    };
+    let user = await User.findById(req.user.id);
+    let wishlist = await WishList.findById(user.wishlist).populate({
+      path: "products",
+      populate: { path: "brand" },
+    });
+    // console.log(wishlist);
+    let products;
+
+    if (!wishlist) {
+      products = [];
+    } else {
+      products = wishlist.products;
+    }
+
+    res.render("user/wishlist", {
+      user,
+      locals,
+      wishlist,
+      products,
+    });
+  },
+
+  addToWishlist: async (req, res) => {
+    console.log(req.body);
+    // if (!req.isAuthenticated()) {
+    //   req.flash("error", "Please log in to add product to wishlist");
+    //   return res.status(401).json({
+    //     success: false,
+    //     message: "Please log in to add product to wishlist",
+    //   });
+    // }
+
+    const { productId } = req.body;
+    let product,
+      user,
+      userWishListID,
+      userWishListData,
+      productsInWishList,
+      productAlreadyInWishList;
+
     try {
-      // console.log(req.body);
-      const { oldPassword, newPassword, confirmNewPassword } = req.body;
+      product = await Product.findById(productId);
+      user = await User.findById(req.user.id);
 
-      let user = await User.findById(req.user.id);
-      if (user) {
-        let validOldPass = bcrypt.compare(oldPassword, user.password);
+      if (!product) {
+        console.log("Product not found");
+        return res
+          .status(404)
+          .json({ success: false, message: "Product not found" });
+      }
 
-        if (!validOldPass) {
-          req.flash("error", "Invalid Old Password");
-          return res.redirect("/user/profile");
-        }
+      if (!user) {
+        console.log("User not found");
+        return res
+          .status(404)
+          .json({ success: false, message: "User not found" });
+      }
 
-        if (newPassword !== confirmNewPassword) {
-          req.flash("error", "Passwords do not match");
-          return res.redirect("/user/profile");
-        }
+      userWishListID = user.wishlist;
 
-        const hashPwd = await bcrypt.hash(newPassword, 10);
-        user.password = hashPwd;
-        console.log(user);
-        await user.save();
-        console.log(user);
-        req.flash("success", "Password Updated");
-        return res.redirect("/user/profile");
+      if (!userWishListID) {
+        const newWishList = new WishList({ userId: user._id });
+        await newWishList.save();
+        userWishListID = newWishList._id;
+        await User.findByIdAndUpdate(user._id, {
+          $set: { wishlist: userWishListID },
+        });
+      }
+
+      userWishListData = await WishList.findById(userWishListID);
+      productsInWishList = userWishListData.products;
+
+      productAlreadyInWishList = productsInWishList.some((existingProduct) =>
+        existingProduct.equals(product._id)
+      );
+
+      if (productAlreadyInWishList) {
+        console.log("Product already exists in wishlist");
+        return res.status(400).json({
+          success: false,
+          message: "Product already exists in wishlist",
+        });
+      }
+
+      await WishList.findByIdAndUpdate(userWishListID, {
+        $push: { products: product._id },
+      });
+
+      console.log("Product added to wishlist");
+      return res
+        .status(201)
+        .json({ success: true, message: "Product added to wishlist" });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        success: false,
+        message: "An error occurred, server facing issues !",
+      });
+    }
+  },
+
+  removeFromWishlist: async (req, res) => {
+    try {
+      const { productId } = req.body;
+      const user = await User.findById(req.user.id);
+
+      const updatedWishList = await WishList.findByIdAndUpdate(user.wishlist, {
+        $pull: { products: productId },
+      });
+
+      if (updatedWishList) {
+        return res.status(201).json({
+          success: true,
+          message: "Removed item from wishlist",
+        });
+      } else {
+        return res.status(500).json({
+          success: true,
+          message: "failed to remove product from wishlist try again",
+        });
       }
     } catch (error) {
-      // return res.status(500).json({ 'error': 'Internal server error' });
-      req.flash("error", "Internal server error");
-      return res.redirect("/user/profile");
+      return res.status(500).json({
+        success: true,
+        message: "failed to remove product from wishlist try again",
+      });
     }
   },
 };

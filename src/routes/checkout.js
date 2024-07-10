@@ -7,7 +7,6 @@ const userController = require("../controller/userController");
 
 const { isLoggedIn } = require("../middlewares/authMiddleware");
 const checkoutController = require("../controller/checkoutController");
-// const couponController = require("../controller/couponController");
 
 router.use(isLoggedIn, (req, res, next) => {
   if (req.isAuthenticated()) {
@@ -20,9 +19,6 @@ router.use(isLoggedIn, (req, res, next) => {
 });
 
 router.get("/", checkoutController.getCheckout);
-
-// router.post("/verify-coupon", couponController.applyCoupon);
-// router.post("/remove-coupon", couponController.removeCoupon);
 
 router.post("/add-address", shopController.addAddress);
 

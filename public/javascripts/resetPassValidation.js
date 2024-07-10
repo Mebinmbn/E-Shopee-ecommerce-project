@@ -4,7 +4,6 @@ const confirmPasswordEl = document.querySelector("#confirmNewPassword");
 
 const form = document.querySelector("#reset-password-form");
 
-
 const checkOldPassword = () => {
   let valid = false;
 
@@ -29,7 +28,6 @@ const checkPassword = () => {
 
   const password = newPasswordEl.value.trim();
 
-
   if (!isRequired(password)) {
     showError(newPasswordEl.parentElement, "Password cannot be blank.");
   } else if (!isPasswordSecure(password)) {
@@ -37,8 +35,11 @@ const checkPassword = () => {
       newPasswordEl.parentElement,
       "Password must has at least 8 characters that include at least 1 lowercase character, 1 uppercase characters, 1 number, and 1 special character in (!@#$%^&*)"
     );
-  }else if(password === oldPasswordEl.value.trim()){
-    showError(newPasswordEl.parentElement, "New password cannot be same as old password");
+  } else if (password === oldPasswordEl.value.trim()) {
+    showError(
+      newPasswordEl.parentElement,
+      "New password cannot be same as old password"
+    );
   } else {
     showSuccess(newPasswordEl.parentElement);
     valid = true;
@@ -79,34 +80,7 @@ const isPasswordSecure = (password) => {
 const isBetween = (length, min, max) =>
   length < min || length > max ? false : true;
 
-// const showError = (input, message) => {
-//   // get the form-field element
-//   const formField = input.parentElement;
-//   // add the error class
-//   formField.classList.remove("success", "is-valid");
-//   input.classList.remove("success", "is-valid");
-//   formField.classList.add("error", "is-invalid");
-//   input.classList.add("error", "is-invalid");
-
-//   // show the error message
-//   const error = formField.querySelector("small");
-//   error.textContent = message;
-// };
-
-// const showSuccess = (input) => {
-//   // get the form-field element
-//   const formField = input.parentElement;
-
-//   // remove the error class
-//   formField.classList.remove("error", "is-invalid");
-//   input.classList.remove("error", "is-invalid");
-//   formField.classList.add("success", "is-valid");
-//   input.classList.add("success", "is-valid");
-
-//   // hide the error message
-//   const error = formField.querySelector("small");
-//   error.textContent = "";
-// };
+//
 
 form.addEventListener("submit", async function (e) {
   e.preventDefault();
@@ -115,54 +89,53 @@ form.addEventListener("submit", async function (e) {
     isPasswordValid = checkPassword(),
     isConfirmPasswordValid = checkConfirmPassword();
 
-  let isFormValid = isOldPasswordValid &&
-    isPasswordValid &&
-    isConfirmPasswordValid;
+  let isFormValid =
+    isOldPasswordValid && isPasswordValid && isConfirmPasswordValid;
 
   if (isFormValid) {
-
     Swal.fire({
-      title: 'Are you sure?',
-      text: 'You want to change your password?',
-      icon: 'warning',
+      title: "Are you sure?",
+      text: "You want to change your password?",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, change it!'
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, change it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
         const confirmed = await Swal.fire({
-          title: 'Are you sure?',
-          text: 'You want to reset your password.',
-          icon: 'warning',
+          title: "Are you sure?",
+          text: "You want to reset your password.",
+          icon: "warning",
           showCancelButton: true,
-          confirmButtonText: 'Yes, reset!',
-          cancelButtonText: 'No, cancel!',
-          reverseButtons: true
+          confirmButtonText: "Yes, reset!",
+          cancelButtonText: "No, cancel!",
+          reverseButtons: true,
         });
-    
+
         if (confirmed.isConfirmed) {
+          console.log("confirmed");
           const formData = new FormData(form);
-          const response = await fetch('/user/reset-password', {
-            method: 'POST',
-            body: formData
+          const response = await fetch("/user/reset-password", {
+            method: "POST",
+            body: formData,
           });
-    
+
           if (response.ok) {
             Swal.fire({
-              title: 'Success!',
-              text: 'Password has been reset.',
-              icon: 'success',
-              timer: 1500
-            }).then(()=>{
-              location.assign('/user/profile');
+              title: "Success!",
+              text: "Password has been reset.",
+              icon: "success",
+              timer: 1500,
+            }).then(() => {
+              location.assign("/user/profile");
             });
           } else {
             Swal.fire({
-              title: 'Error!',
-              text: 'Something went wrong.',
-              icon: 'error',
-              timer: 1500
+              title: "Error!",
+              text: "Something went wrong.",
+              icon: "error",
+              timer: 1500,
             });
           }
         }
@@ -171,7 +144,6 @@ form.addEventListener("submit", async function (e) {
     });
   }
 });
-
 
 const debounce = (fn, delay = 500) => {
   let timeoutId;
@@ -208,7 +180,9 @@ form.addEventListener(
 
 const toggleOldPassword = document.querySelector("#toggleOldPassword");
 const togglePassword = document.querySelector("#toggleNewPassword");
-const togglePasswordConfirm = document.querySelector("#toggleNewPasswordConfirm");
+const togglePasswordConfirm = document.querySelector(
+  "#toggleNewPasswordConfirm"
+);
 const password = document.querySelector("#newPassword");
 const confirmPassword = document.querySelector("#confirmNewPassword");
 
@@ -219,7 +193,6 @@ toggleOldPassword.addEventListener("click", function (e) {
   oldPasswordEl.setAttribute("type", type);
   // toggle the eye / eye slash icon
   this.classList.toggle("bi-eye");
-
 });
 togglePassword.addEventListener("click", function (e) {
   // toggle the type attribute
