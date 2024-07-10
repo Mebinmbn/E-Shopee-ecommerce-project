@@ -385,7 +385,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const paymentMethod = body.paymentMethod;
             console.log(body);
             try {
-
               // show loading using swal
               Swal.fire({
                 title: "Please wait...",
@@ -405,7 +404,7 @@ document.addEventListener("DOMContentLoaded", function () {
               });
 
               Swal.close();
-              
+
               console.log(response);
               const data = await response.json();
               console.log(data);
@@ -445,12 +444,12 @@ document.addEventListener("DOMContentLoaded", function () {
 const showRazorpay = (order, user) => {
   console.log(order, user);
   var options = {
-    key: "rzp_test_EL8MknNoOtmLva", 
-    amount: order.amount, 
+    key: "rzp_test_xnsJNuDLxrH6xO",
+    amount: order.amount,
     currency: "INR",
-    name: "SoleStride",
+    name: "E-Shopee",
     description: "Test Transaction",
-    order_id: order.id, 
+    order_id: order.id,
     handler: async function (response) {
       console.log(response);
       // const res = await fetch('/user/verify-payment', {
@@ -462,7 +461,7 @@ const showRazorpay = (order, user) => {
       // })
 
       // console.log(res);
-      await verifyPayment(response)
+      await verifyPayment(response);
     },
     prefill: {
       name: user.username,
@@ -486,11 +485,10 @@ const showRazorpay = (order, user) => {
   });
 };
 const verifyPayment = async (response) => {
-
   const res = await fetch("/checkout/verify-payment", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({response}),
+    body: JSON.stringify({ response }),
   })
     .then((response) => response.json())
     .then((data) => {
@@ -500,7 +498,7 @@ const verifyPayment = async (response) => {
       }
     });
 
-  const data = await res.json()
+  const data = await res.json();
 
   console.log(data);
   if (data.success) {

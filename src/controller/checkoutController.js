@@ -3,11 +3,21 @@ const Cart = require("../model/cartSchema");
 const Order = require("../model/orderSchema");
 const Address = require("../model/addressSchema");
 const Product = require("../model/productSchema");
-// const Payment = require("../model/paymentSchema");
+const Payment = require("../model/paymentSchema");
+// const Wallet = require("../model/walletSchema");
+const Coupon = require("../model/couponSchema");
 
 const mongoose = require("mongoose");
+require("dotenv").config();
 
+// Razorpay
+const Razorpay = require("razorpay");
 const crypto = require("crypto");
+
+var instance = new Razorpay({
+  key_id: process.env.RAZ_KEY_ID,
+  key_secret: process.env.RAZ_KEY_SECRET,
+});
 
 // Function to check if a product exists and is active
 const checkProductExistence = async (cartItem) => {
@@ -65,21 +75,21 @@ function generateOrderID() {
 // check coupon if valid apply
 // Payment and Stuff
 
-// const createRazorpayOrder = async (order_id, total) => {
-//   let options = {
-//     amount: total * 100, // amount in the smallest currency unit
-//     currency: "INR",
-//     receipt: order_id.toString(),
-//   };
-//   const order = await instance.orders.create(options);
+const createRazorpayOrder = async (order_id, total) => {
+  let options = {
+    amount: total * 100, // amount in the smallest currency unit
+    currency: "INR",
+    receipt: order_id.toString(),
+  };
+  const order = await instance.orders.create(options);
 
-//   return order;
-// };
+  return order;
+};
 
 module.exports = {
   getCheckout: async (req, res) => {
     const locals = {
-      title: "E Shopee - Checkout",
+      title: "E-Shopee - Checkout",
     };
 
     if (!req.isAuthenticated()) {
@@ -87,7 +97,7 @@ module.exports = {
     }
 
     const userCart = await Cart.findOne({ userId: req.user.id }).populate(
-      "items.product_id items.color items.size"
+      "items.product_id items.color items.size coupon"
     );
     if (!userCart) {
       return res.redirect("/user/cart");
@@ -201,12 +211,12 @@ module.exports = {
     // Correctly calculate cartCount
     let cartCount = userCart.items.length;
 
-    // const coupons = await Coupon.find({
-    //   isActive: true,
-    //   minPurchaseAmount: { $lte: totalPriceBeforeOffer },
-    //   expirationDate: { $gte: Date.now() },
-    //   // usedBy: [{ $: req.user.id }],
-    // });
+    const coupons = await Coupon.find({
+      isActive: true,
+      minPurchaseAmount: { $lte: totalPriceBeforeOffer },
+      expirationDate: { $gte: Date.now() },
+      // usedBy: [{ $: req.user.id }],
+    });
     // console.log(coupons);
 
     let userWallet = 0;
@@ -239,7 +249,7 @@ module.exports = {
       isCOD,
       cartList: userCart.items,
       cartCount,
-      // coupons,
+      coupons,
       totalPrice,
       couponDiscount,
       wallet: userWallet,
@@ -426,42 +436,42 @@ module.exports = {
           }
 
           break;
-        // case "Online":
-        //   const createOrder = await Order.create(order);
+        case "Online":
+          const createOrder = await Order.create(order);
 
-        //   let total = parseInt(userCart.payable);
-        //   let order_id = createOrder._id;
+          let total = parseInt(userCart.payable);
+          let order_id = createOrder._id;
 
-        //   const RazorpayOrder = await createRazorpayOrder(order_id, total).then(
-        //     (order) => order
-        //   );
+          const RazorpayOrder = await createRazorpayOrder(order_id, total).then(
+            (order) => order
+          );
 
-        //   const timestamp = RazorpayOrder.created_at;
-        //   const date = new Date(timestamp * 1000); // Convert the Unix timestamp to milliseconds
+          const timestamp = RazorpayOrder.created_at;
+          const date = new Date(timestamp * 1000); // Convert the Unix timestamp to milliseconds
 
-        //   // Format the date and time
-        //   const formattedDate = date.toISOString();
+          // Format the date and time
+          const formattedDate = date.toISOString();
 
-        //   //creating a instance for payment details
-        //   let payment = new Payment({
-        //     payment_id: RazorpayOrder.id,
-        //     amount: parseInt(RazorpayOrder.amount) / 100,
-        //     currency: RazorpayOrder.currency,
-        //     order_id: order_id,
-        //     status: RazorpayOrder.status,
-        //     created_at: formattedDate,
-        //   });
+          //creating a instance for payment details
+          let payment = new Payment({
+            payment_id: RazorpayOrder.id,
+            amount: parseInt(RazorpayOrder.amount) / 100,
+            currency: RazorpayOrder.currency,
+            order_id: order_id,
+            status: RazorpayOrder.status,
+            created_at: formattedDate,
+          });
 
-        //   //saving in to db
-        //   await payment.save();
+          //saving in to db
+          await payment.save();
 
-        //   return res.json({
-        //     status: true,
-        //     order: RazorpayOrder,
-        //     user,
-        //   });
+          return res.json({
+            status: true,
+            order: RazorpayOrder,
+            user,
+          });
 
-        // break;
+          break;
 
         case "Wallet":
           const orderCreate = await Order.create(order);

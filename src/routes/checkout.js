@@ -4,6 +4,7 @@ const router = express.Router();
 const shopController = require("../controller/shopController");
 const cartController = require("../controller/cartController");
 const userController = require("../controller/userController");
+const couponController = require("../controller/couponController");
 
 const { isLoggedIn } = require("../middlewares/authMiddleware");
 const checkoutController = require("../controller/checkoutController");
@@ -19,6 +20,9 @@ router.use(isLoggedIn, (req, res, next) => {
 });
 
 router.get("/", checkoutController.getCheckout);
+
+router.post("/verify-coupon", couponController.applyCoupon);
+router.post("/remove-coupon", couponController.removeCoupon);
 
 router.post("/add-address", shopController.addAddress);
 

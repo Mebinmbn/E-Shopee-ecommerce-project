@@ -6,6 +6,7 @@ const categoryController = require("../controller/categoryController");
 const bannerController = require("../controller/bannerController");
 const productController = require("../controller/productController");
 const orderController = require("../controller/orderController");
+const couponController = require("../controller/couponController");
 
 const { categoryValidation } = require("../validators/adminValidator");
 
@@ -196,5 +197,20 @@ router.route("/orders/manage-order/:id").get(orderController.getOrderDetails);
 router
   .route("/orders/manage-order/changeStatus/:id")
   .post(orderController.changeOrderStatus);
+
+/***
+ * Coupon Management
+ */
+
+router.get("/coupons", couponController.getCoupons);
+router.post("/coupons/add-coupon", couponController.addCoupon);
+
+router
+  .route("/coupons/edit/:id")
+  .get(couponController.getCoupon)
+  .put(couponController.editCoupon);
+
+router.patch("/coupon/toggleStatus/:id", couponController.toggleStatus);
+router.delete("/coupon/delete-coupon/:id", couponController.deleteCoupon);
 
 module.exports = router;

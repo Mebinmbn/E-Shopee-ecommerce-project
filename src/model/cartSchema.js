@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const Product = require("./productSchema");
-// const Coupon = require("./couponSchema");
+const Coupon = require("./couponSchema");
 
 const cartSchema = new mongoose.Schema(
   {
@@ -46,14 +46,14 @@ const cartSchema = new mongoose.Schema(
     totalPrice: {
       type: Number,
     },
-    // coupon: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Coupon",
-    // },
-    // couponDiscount: {
-    //   type: Number,
-    //   default: 0,
-    // },
+    coupon: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Coupon",
+    },
+    couponDiscount: {
+      type: Number,
+      default: 0,
+    },
     payable: {
       type: Number,
     },
