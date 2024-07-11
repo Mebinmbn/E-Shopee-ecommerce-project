@@ -242,7 +242,7 @@ module.exports = {
         }
       }
 
-      console.log(orderDetails);
+      console.log("orderDetails ", orderDetails);
 
       const isInReturn = await Return.findOne({ order_id: order_id });
       console.log(isInReturn);
