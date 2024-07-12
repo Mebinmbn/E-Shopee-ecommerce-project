@@ -724,6 +724,13 @@ module.exports = {
         update.out_for_delivery = new Date();
       } else if (status === "Delivered") {
         update.delivered_on = new Date();
+
+        const product = await Product.findById(currentItem.product_id);
+        if (product) {
+          product.popularity += 1;
+
+          await product.save(); // updating the popularity
+        }
       } else if (status === "Returned") {
         update.returned_on = new Date();
 

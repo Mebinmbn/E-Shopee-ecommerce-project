@@ -67,6 +67,8 @@ module.exports = {
           sortQuery = { product_name: -1 };
         } else if (sortBy === "NewArrival") {
           sortQuery = { createdAt: -1 };
+        } else if (sortBy === "Popularity") {
+          sortQuery = { popularity: -1 };
         }
       }
 

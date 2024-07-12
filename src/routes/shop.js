@@ -10,6 +10,7 @@ const { isLoggedIn } = require("../middlewares/authMiddleware");
 
 const { cartList } = require("../middlewares/cartMiddleware");
 const userController = require("../controller/userController");
+const bestSelling = require("../helpers/bestSelling");
 
 router.use(async (req, res, next) => {
   if (req.isAuthenticated()) {
@@ -29,5 +30,7 @@ router.get("/shop/product/:id", shopController.getProduct);
 router.get("/contact", shopController.getContact);
 
 router.get("/shop/order-success", isLoggedIn, cartController.getOrderSuccess);
+
+router.get("/bestSelling", bestSelling.getBestSellingProducts);
 
 module.exports = router;

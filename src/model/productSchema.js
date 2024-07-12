@@ -148,6 +148,10 @@ const productSchema = new Schema(
       type: Boolean,
       default: true,
     },
+    popularity: {
+      type: Number, // You can use Number or another suitable type depending on your popularity metric
+      default: 0, // Default value for popularity
+    },
   },
   {
     timestamps: true,
