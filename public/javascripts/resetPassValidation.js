@@ -116,9 +116,13 @@ form.addEventListener("submit", async function (e) {
         if (confirmed.isConfirmed) {
           console.log("confirmed");
           const formData = new FormData(form);
+          const body = Object.fromEntries(formData.entries());
           const response = await fetch("/user/reset-password", {
             method: "POST",
-            body: formData,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
           });
 
           if (response.ok) {

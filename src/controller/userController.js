@@ -48,8 +48,8 @@ module.exports = {
   // Password Reset From Profile
   resetPass: async (req, res) => {
     try {
-      console.log("Password dtails", req.body);
       const { oldPassword, newPassword, confirmNewPassword } = await req.body;
+      console.log("Password dtails", req.body);
 
       let user = await User.findById(req.user.id);
       if (user) {

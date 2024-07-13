@@ -7,6 +7,7 @@ const bannerController = require("../controller/bannerController");
 const productController = require("../controller/productController");
 const orderController = require("../controller/orderController");
 const couponController = require("../controller/couponController");
+const offerController = require("../controller/offerController");
 
 const { categoryValidation } = require("../validators/adminValidator");
 
@@ -212,5 +213,23 @@ router
 
 router.patch("/coupon/toggleStatus/:id", couponController.toggleStatus);
 router.delete("/coupon/delete-coupon/:id", couponController.deleteCoupon);
+
+// Category Offer
+router.get("/category-offers", offerController.getCategoryOffers);
+router.get("/category-details/:id", categoryController.getCategoryDetails);
+router.patch("/category-offer/:id", offerController.addCatOffer);
+router.patch(
+  "/toggle-active-category/:id",
+  offerController.toggleActiveCatOffer
+);
+
+// Product Offer
+router.get("/product-offers", offerController.getProductOffers);
+router.get("/product-details/:id", productController.getProdDetails);
+router.patch("/product-offer/:id", offerController.addProdOffer);
+router.patch(
+  "/toggle-active-product/:id",
+  offerController.toggleActiveProdOffer
+);
 
 module.exports = router;
