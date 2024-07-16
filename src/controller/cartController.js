@@ -216,7 +216,7 @@ module.exports = {
         .json({ error: "An error occurred while fetching the cart." });
     }
   },
-
+  // add to cart
   addToCart: async (req, res) => {
     if (!req.isAuthenticated()) {
       return res.status(401).json({

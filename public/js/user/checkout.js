@@ -442,7 +442,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 //payment interface function
 const showRazorpay = (order, user) => {
-  console.log(order, user);
+  // console.log(order, user);
   var options = {
     key: "rzp_test_xnsJNuDLxrH6xO",
     amount: order.amount,
@@ -451,7 +451,7 @@ const showRazorpay = (order, user) => {
     description: "Test Transaction",
     order_id: order.id,
     handler: async function (response) {
-      console.log(response);
+      // console.log(response);
       // const res = await fetch('/user/verify-payment', {
       //   method: 'POST',
       //   headers: {
@@ -472,7 +472,7 @@ const showRazorpay = (order, user) => {
       address: "Razorpay Corporate Office",
     },
     theme: {
-      color: "#2ade99",
+      color: "#e18844",
     },
   };
 
@@ -485,24 +485,32 @@ const showRazorpay = (order, user) => {
   });
 };
 const verifyPayment = async (response) => {
-  const res = await fetch("/checkout/verify-payment", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ response }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-      if (data.success) {
-        location.assign("/shop/order-success");
-      }
+  try {
+    const res = await fetch("/checkout/verify-payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ response }),
     });
 
-  const data = await res.json();
+    if (!res.ok) {
+      throw new Error(`HTTP error! Status: ${res.status}`);
+    }
 
-  console.log(data);
-  if (data.success) {
-    location.assign("/shop/order-success");
+    const data = await res.json();
+    console.log(data);
+
+    if (data.success) {
+      location.assign("/shop/order-success");
+    } else {
+      swal.fire("Payment Failed", data.message, "error");
+    }
+  } catch (error) {
+    console.error("Error verifying payment:", error);
+    swal.fire(
+      "Payment Failed",
+      "An error occurred while verifying payment",
+      "error"
+    );
   }
 };
 

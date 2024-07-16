@@ -17,6 +17,7 @@ const couponSchema = new Schema({
     type: Number,
     required: true,
     min: 0, // Ensures the value is non-negative
+    max: 95,
   },
   minPurchaseAmount: {
     type: Number,

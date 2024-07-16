@@ -185,6 +185,7 @@ module.exports = {
     let couponDiscount = 0;
     if (userCart.coupon) {
       const coupon = await Coupon.findById(userCart.coupon);
+
       if (
         coupon &&
         coupon.isActive &&
@@ -202,22 +203,22 @@ module.exports = {
     }
 
     // Update the cart's total price and coupon discount in the database
-    // userCart.totalPrice = totalPriceBeforeOffer;
-    // userCart.payable = totalPrice;
-    // userCart.couponDiscount = couponDiscount;
-    // console.log(userCart);
-    // await userCart.save();
+    userCart.totalPrice = totalPriceBeforeOffer;
+    userCart.payable = totalPrice;
+    userCart.couponDiscount = couponDiscount;
+    console.log(userCart);
+    await userCart.save();
 
     // Correctly calculate cartCount
     let cartCount = userCart.items.length;
 
     const coupons = await Coupon.find({
       isActive: true,
-      minPurchaseAmount: { $lte: totalPriceBeforeOffer },
+      // minPurchaseAmount: { $lte: totalPriceBeforeOffer },
       expirationDate: { $gte: Date.now() },
       // usedBy: [{ $: req.user.id }],
     });
-    // console.log(coupons);
+    // console.log("coupons", coupons);
 
     let userWallet = 0;
 
@@ -256,11 +257,12 @@ module.exports = {
       checkout: true,
     });
   },
+
   placeOrder: async (req, res) => {
     try {
       const { paymentMethod, address } = req.body;
 
-      console.log(req.body);
+      // console.log(req.body);
 
       let shippingAddress = await Address.findOne({
         _id: address,
@@ -317,7 +319,7 @@ module.exports = {
           ? "Paid"
           : "Pending";
 
-      console.log(userCart.items);
+      // console.log(userCart.items);
 
       let order;
 
@@ -421,14 +423,6 @@ module.exports = {
                 .json({ error: "Failed to clear user's cart" });
             });
 
-            // coupon is used
-            if (order.coupon) {
-              await Coupon.findOneAndUpdate(
-                { _id: userCart.coupon },
-                { $push: { usedBy: { userId: req.user.id } } }
-              );
-            }
-
             return res.status(200).json({
               success: true,
               message: "Order has been placed successfully.",
@@ -436,6 +430,7 @@ module.exports = {
           }
 
           break;
+
         case "Online":
           const createOrder = await Order.create(order);
 
@@ -568,7 +563,7 @@ module.exports = {
 
       const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
         req.body.response;
-      console.log("payment verification: ", req.body, secret);
+      // console.log("payment verification: ", req.body, secret);
       let hmac = crypto.createHmac("sha256", secret);
       hmac.update(razorpay_order_id + "|" + razorpay_payment_id);
       hmac = hmac.digest("hex");
@@ -609,7 +604,7 @@ module.exports = {
             return res.status(404).json({ error: "Variant not found" });
           }
 
-          console.log(product.variants[variantIndex]);
+          // console.log(product.variants[variantIndex]);
 
           product.variants[variantIndex].stock -= item.quantity;
 
@@ -636,7 +631,7 @@ module.exports = {
 
         const order_id = orderID.order_id;
 
-        const updateOrder = await Order.updateOne(
+        updateOrder = await Order.updateOne(
           { _id: order_id },
           {
             $set: {
@@ -648,25 +643,38 @@ module.exports = {
           }
         );
 
-        let couponId = await Order.findOne({ _id: order_id }).populate(
-          "coupon"
-        );
+        let order = await Order.findOne({ _id: order_id }).populate("coupon");
 
-        console.log(couponId);
-        if (couponId.coupon) {
-          couponId = couponId.coupon._id;
-          if (couponId) {
-            let updateCoupon = await Coupon.findByIdAndUpdate(
-              { _id: couponId },
-              {
-                $push: { usedBy: customer_id },
-              },
-              {
-                new: true,
+        console.log("order: ", order);
+        let couponId;
+        // Apply coupon usage if applicable
+        if (order.coupon) {
+          try {
+            couponId = order.coupon._id;
+            console.log("coupon : ", couponId);
+            if (couponId) {
+              const updatedCoupon = await Coupon.findOneAndUpdate(
+                { _id: couponId },
+                {
+                  $push: { usedBy: order.customer_id },
+                },
+                {
+                  new: true,
+                }
+              );
+
+              if (!updatedCoupon) {
+                return res.status(404).json({ error: "Coupon not found" });
               }
-            );
+
+              console.log("Coupon updated successfully:", updatedCoupon);
+            }
+          } catch (error) {
+            console.error("Error applying coupon:", error);
+            return res.status(500).json({ error: "Failed to apply coupon" });
           }
         }
+
         req.session.order = {
           status: true,
         };

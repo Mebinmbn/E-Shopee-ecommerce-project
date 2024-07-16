@@ -8,6 +8,7 @@ const productController = require("../controller/productController");
 const orderController = require("../controller/orderController");
 const couponController = require("../controller/couponController");
 const offerController = require("../controller/offerController");
+const returnController = require("../controller/returnController");
 
 const { categoryValidation } = require("../validators/adminValidator");
 
@@ -232,4 +233,13 @@ router.patch(
   offerController.toggleActiveProdOffer
 );
 
+/**
+ * Order Return
+ */
+
+router.get("/returns", returnController.getReturnRequests);
+
+router.post("/returns/approve-return", returnController.approveReturn);
+
+router.post("/returns/reject-return", returnController.declineReturn);
 module.exports = router;
