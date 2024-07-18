@@ -9,6 +9,7 @@ const orderController = require("../controller/orderController");
 const couponController = require("../controller/couponController");
 const offerController = require("../controller/offerController");
 const returnController = require("../controller/returnController");
+const reportsController = require("../controller/reportsController");
 
 const { categoryValidation } = require("../validators/adminValidator");
 
@@ -242,4 +243,14 @@ router.get("/returns", returnController.getReturnRequests);
 router.post("/returns/approve-return", returnController.approveReturn);
 
 router.post("/returns/reject-return", returnController.declineReturn);
+
+/**
+ * Sales Report
+ */
+
+router.get("/sales-report", reportsController.getSalesReport);
+router.get("/sales-report/excel", reportsController.salesReportExcel);
+router.get("/sales-report/pdf-download", reportsController.getSalesReportPdf);
+router.get("/sales-report/pdf", reportsController.salesReportPdf);
+
 module.exports = router;

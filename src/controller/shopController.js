@@ -34,7 +34,7 @@ module.exports = {
 
   search: async (req, res, next) => {
     try {
-      console.log(req.query);
+      // console.log(req.query);
       let search = "";
 
       if (req.query.search) {
@@ -103,7 +103,7 @@ module.exports = {
       const brands = await Brand.find({}).sort({ name: 1 });
 
       // console.log("Brands ", brands);
-      console.log(products);
+      // console.log(products);
       return res.render("shop/search.ejs", {
         sortBy,
         brandID,
@@ -229,7 +229,7 @@ module.exports = {
         });
       });
       logger.info(`Poduct: ${productData[0].product_name} checked`);
-      console.log(productData);
+      // console.log(productData);
       // Assuming productData is an array with one or more objects
       // Assuming productData is an array with one or more objects
       // productData.forEach((product) => {
@@ -240,7 +240,7 @@ module.exports = {
       //         console.log(`Variant ${ index + 1 }:`);
       //         console.log("Color:", variant.color);
       //         console.log("Size:", variant.size);
-      console.log("Stock Final:", productData[0].variants[0].stock);
+      // console.log("Stock Final:", productData[0].variants[0].stock);
       //         console.log("Varient ID", variant._id)
       //         console.log("---------------------------");
       //     });

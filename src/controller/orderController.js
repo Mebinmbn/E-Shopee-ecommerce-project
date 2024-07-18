@@ -1,4 +1,4 @@
-// const easyinvoice = require("easyinvoice");
+const easyinvoice = require("easyinvoice");
 
 const fs = require("fs");
 const path = require("path");
@@ -8,6 +8,7 @@ const User = require("../model/userSchema");
 const Product = require("../model/productSchema");
 const Address = require("../model/addressSchema");
 const Return = require("../model/returnSchema");
+const Wallet = require("../model/walletSchema");
 const mongoose = require("mongoose");
 
 const layout = "./layouts/adminLayout.ejs";
@@ -66,7 +67,7 @@ module.exports = {
     }
 
     // orderDetails = orderDetails.reverse();
-    console.log(orderDetails[0]);
+    // console.log(orderDetails[0]);
 
     const count = await Order.countDocuments({ customer_id: user._id });
     // const order = await Order.find({ customer_id: user._id });
@@ -242,7 +243,7 @@ module.exports = {
         }
       }
 
-      console.log("orderDetails ", orderDetails);
+      // console.log("orderDetails ", orderDetails);
 
       const isInReturn = await Return.findOne({ order_id: order_id });
       console.log(isInReturn);
@@ -301,6 +302,176 @@ module.exports = {
   },
 
   // Get Invoice
+  getInvoice: async (req, res) => {
+    const invoiceId = `SS${Math.floor(1000 + Math.random() * 9000)}`;
+
+    const locals = {
+      title: `Invoice - ${invoiceId}`,
+    };
+    const { id, itemId } = req.params;
+
+    console.log(id, itemId);
+
+    let order = await Order.aggregate([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(id),
+          "items.orderID": itemId,
+        },
+      },
+      {
+        $unwind: "$items",
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "items.product_id",
+          foreignField: "_id",
+          as: "items.product",
+        },
+      },
+      {
+        // change product details to object
+        $set: {
+          "items.product": {
+            $arrayElemAt: ["$items.product", 0],
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          items: 1,
+          shippingAddress: 1,
+          paymentMethod: 1,
+          totalPrice: 1,
+          coupon: 1,
+          couponDiscount: 1,
+          payable: 1,
+          categoryDiscount: 1,
+          paymentStatus: 1,
+          orderStatus: 1,
+          createdAt: 1,
+          updatedAt: 1,
+        },
+      },
+    ]);
+
+    console.log(order[0]);
+    // Generate random invoice id on the format SS-XXXX
+
+    res.render("user/invoice-pdf", {
+      order: order[0],
+      user: req.user,
+      invoiceId,
+      locals,
+      // layout: "./layouts/docs/invoice.ejs",
+    });
+  },
+
+  downloadInvoice: async (req, res) => {
+    const { id, itemId } = req.params;
+
+    const order = await Order.aggregate([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(id),
+          "items.orderID": itemId,
+        },
+      },
+      {
+        $unwind: "$items",
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "items.product_id",
+          foreignField: "_id",
+          as: "items.product",
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          items: 1,
+          shippingAddress: 1,
+          paymentMethod: 1,
+          totalPrice: 1,
+          coupon: 1,
+          couponDiscount: 1,
+          payable: 1,
+          categoryDiscount: 1,
+          paymentStatus: 1,
+          orderStatus: 1,
+          createdAt: 1,
+        },
+      },
+    ]);
+
+    // console.log(order[0].items);
+
+    var data = {
+      apiKey: "free", // Please register to receive a production apiKey: https://app.budgetinvoice.com/register
+      mode: "development", // Production or development, defaults to production
+      images: {
+        // The logo on top of your invoice
+        logo: "https://public.budgetinvoice.com/img/logo_en_original.png",
+      },
+      // Your own data
+      sender: {
+        company: "E-Shopee",
+        address: "Sample Street 123",
+        zip: "1234 AB",
+        city: "Sampletown",
+        country: "Samplecountry",
+      },
+      // Your recipient
+      client: {
+        company: order[0].shippingAddress.name,
+        address: order[0].shippingAddress.address,
+        zip: order[0].shippingAddress.zipcope,
+        city: order[0].shippingAddress.city,
+        country: "India",
+      },
+      information: {
+        // Invoice number
+        number: order[0].items.orderID,
+        // Invoice data
+        date: new Date().toISOString().slice(0, 10),
+      },
+      products: [
+        {
+          quantity: order[0].quantity,
+          description: order[0].items.product[0].product_name,
+          taxRate: 0,
+          price: order[0].items.itemTotal,
+        },
+      ],
+      // The message you would like to display on the bottom of your invoice
+      bottomNotice: "Kindly pay your invoice within 15 days.",
+      // Settings to customize your invoice
+      settings: {
+        currency: "INR", // See documentation 'Locales and Currency' for more info. Leave empty for no currency.
+      },
+    };
+
+    //Create your invoice! Easy!
+    const result = await easyinvoice.createInvoice(data);
+    // console.log("PDF base64 string: ", result.pdf);
+
+    // Convert base64 string to buffer
+    const pdfBuffer = Buffer.from(result.pdf, "base64");
+
+    // Set headers for file download
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=${order[0].items.orderID}_invoice_${Date.now()}.pdf`
+    );
+
+    // Send the PDF buffer as a response
+    res.send(pdfBuffer);
+  },
 
   // Cancel and Return
   cancelOrder: async (req, res) => {
@@ -335,6 +506,67 @@ module.exports = {
       }
 
       // If payment is done using wallet or online add the amount back to the user's wallet
+
+      if (
+        order.paymentMethod === "Wallet" ||
+        order.paymentMethod === "Online"
+      ) {
+        let price = await Order.aggregate([
+          {
+            $match: {
+              _id: new mongoose.Types.ObjectId(id),
+              "items.orderID": itemId,
+            },
+          },
+          {
+            $unwind: "$items",
+          },
+          {
+            $match: {
+              "items.orderID": itemId,
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              itemTotal: "$items.itemTotal",
+            },
+          },
+        ]);
+
+        console.log(price);
+
+        const wallet = await Wallet.findOne({ userId: req.user.id });
+
+        if (!wallet) {
+          const newWallet = new Wallet({
+            userId: req.user.id,
+            balance: parseInt(price[0].itemTotal),
+            transactions: [
+              {
+                date: new Date(),
+                amount: parseInt(price[0].itemTotal),
+                message: "Order cancelled successfully",
+                type: "Credit",
+              },
+            ],
+          });
+
+          await newWallet.save();
+        } else {
+          wallet.balance =
+            parseInt(wallet.balance) + parseInt(price[0].itemTotal);
+
+          wallet.transactions.push({
+            date: new Date(),
+            amount: parseInt(price[0].itemTotal),
+            message: "Order cancelled successfully",
+            type: "Credit",
+          });
+
+          await wallet.save();
+        }
+      }
 
       const updateOrder = await Order.findOne({
         _id: id,

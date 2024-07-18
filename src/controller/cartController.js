@@ -87,7 +87,7 @@ const handleCartUpdate = async (req, res, increment = true) => {
 
       userCart.totalPrice = totalPrice;
       await userCart.save();
-      console.log(userCart);
+      // console.log(userCart);
       const currentItem = userCart.items.find(
         (item) =>
           item.product_id._id.toString() === productId &&

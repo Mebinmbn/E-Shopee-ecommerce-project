@@ -442,7 +442,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 //payment interface function
 const showRazorpay = (order, user) => {
-  // console.log(order, user);
+  console.log(order, user);
   var options = {
     key: "rzp_test_xnsJNuDLxrH6xO",
     amount: order.amount,

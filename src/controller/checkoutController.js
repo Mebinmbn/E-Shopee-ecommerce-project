@@ -4,7 +4,7 @@ const Order = require("../model/orderSchema");
 const Address = require("../model/addressSchema");
 const Product = require("../model/productSchema");
 const Payment = require("../model/paymentSchema");
-// const Wallet = require("../model/walletSchema");
+const Wallet = require("../model/walletSchema");
 const Coupon = require("../model/couponSchema");
 
 const mongoose = require("mongoose");
@@ -220,7 +220,7 @@ module.exports = {
     });
     // console.log("coupons", coupons);
 
-    let userWallet = 0;
+    let userWallet = await Wallet.findOne({ userId: req.user.id });
 
     if (!userWallet) {
       userWallet = {

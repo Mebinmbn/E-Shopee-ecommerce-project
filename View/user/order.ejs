@@ -171,6 +171,21 @@
                       class="text-center btn bg-secondary text-warning py-2 px-2"
                       value="Return: <%= order.items.status %>"
                     />
+                    <% } %><% if (order.items.delivered) { %>
+                    <!-- Return Status -->
+                    <button
+                      id="invoice"
+                      data-order-id="<%- order._id %>"
+                      data-item-id="<%- order.items.orderID %>"
+                      data-variant="<%- order.items.variant %>"
+                      data-product-id="<%- order.items.product_id._id %>"
+                      data-bs-toggle="modal"
+                      data-bs-target="#invoiceModal"
+                      type="button"
+                      class="btn col btn-outline-primary"
+                    >
+                      Download Invoice
+                    </button>
                     <% } %>
                     <!-- <button type="button" class="w-100 btn col btn-outline-success"></button> -->
                   </div>

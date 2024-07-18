@@ -77,4 +77,16 @@ router.get("/wishlist", userController.getWishlist);
 router.post("/add-to-wishlist", userController.addToWishlist);
 router.delete("/remove-from-wishlist", userController.removeFromWishlist);
 
+//  invoice
+router.get("/invoice/:id/:itemId", orderController.getInvoice);
+router.get("/invoice/download/:id/:itemId", orderController.downloadInvoice);
+
+/**
+ * User Wallet
+ */
+
+router.get("/wallet", userController.getWallet);
+router.post("/add-to-wallet", userController.addToWallet);
+router.post("/verify-wallet-payment", userController.verifyPayment);
+
 module.exports = router;
