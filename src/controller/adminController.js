@@ -2,6 +2,7 @@ const adminLayout = "./layouts/adminLayout.ejs";
 const User = require("../model/userSchema");
 const Product = require("../model/productSchema");
 const Orders = require("../model/orderSchema");
+const bestSelling = require("../helpers/bestSelling");
 
 module.exports = {
   getDashboard: async (req, res) => {
@@ -30,9 +31,9 @@ module.exports = {
 
     const ordersCount = await Orders.find().countDocuments();
 
-    const bestSellingBrands = [];
-    const bestSellingProducts = [];
-    const bestSellingCategories = [];
+    let bestSellingProducts = await bestSelling.getBestSellingProducts();
+    let bestSellingBrands = await bestSelling.getBestSellingBrands();
+    let bestSellingCategories = await bestSelling.getBestSellingCategories();
 
     res.render("admin/dashboard", {
       locals,

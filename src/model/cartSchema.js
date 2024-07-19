@@ -61,39 +61,6 @@ const cartSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// cartSchema.pre("save", async function (next) {
-//   // Initialize totalPrice to 0
-//   this.totalPrice = 0;
-
-//   for (const item of this.items) {
-//     item.price = item.product_id.onOffer ? item.product_id.offerDiscountPrice : item.product_id.sellingPrice;
-//     const itemTotalPrice = item.price * item.quantity;
-//     item.itemTotal = itemTotalPrice;
-//     this.totalPrice += itemTotalPrice;
-//   }
-
-//   this.payable = this.totalPrice
-
-//   // Check if a coupon is applied
-//   if (this.coupon) {
-//     // Assuming you have a method to fetch the coupon details
-//     // and calculate the discount based on the total price
-//     const coupon = await Coupon.findById(this.coupon);
-//     if (coupon) {
-//       // Apply the coupon discount to the total price
-//       // This is a simple example, adjust according to your coupon logic
-//       this.couponDiscount = this.totalPrice * (coupon.discountPercentage / 100);
-//       this.payable -= this.couponDiscount;
-//     }
-//   } else {
-//     // If no coupon, reset the couponDiscount to 0
-//     this.couponDiscount = 0;
-//   }
-
-//   // Continue with the save operation
-//   next();
-// });
-
 cartSchema.statics.clearCart = async function (userId) {
   return await this.findOneAndUpdate(
     { userId: userId },

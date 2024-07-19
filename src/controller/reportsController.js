@@ -103,6 +103,8 @@ module.exports = {
       },
     ]);
 
+    console.log("orders ", orders);
+
     // Ordered Item details
     // orders.forEach((order) => {
     //   order.orderedItems = order.orderedItems.map((item) => ({
@@ -229,6 +231,8 @@ module.exports = {
           },
         },
       ]);
+
+      console.log("orders ", orders);
 
       // Ordered Item details
       orders.forEach((order) => {

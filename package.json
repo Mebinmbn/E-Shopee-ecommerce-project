@@ -17,7 +17,6 @@
     "cookie-parser": "^1.4.6",
     "dompurify": "^3.1.5",
     "dotenv": "^16.4.5",
-    "easyinvoice": "^1.0.67",
     "ejs": "^3.1.10",
     "exceljs": "^4.4.0",
     "express": "^4.19.2",
@@ -37,10 +36,15 @@
     "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
+    "pdfjs-dist": "^4.4.168",
     "puppeteer": "^22.13.0",
     "razorpay": "^2.9.4",
     "sharp": "^0.33.4",
     "winston": "^3.13.0",
     "winston-mongodb": "^5.1.1"
+  },
+  "devDependencies": {
+    "chokidar": "^3.6.0",
+    "rimraf": "^6.0.1"
   }
 }

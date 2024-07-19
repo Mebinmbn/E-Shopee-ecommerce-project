@@ -7,6 +7,7 @@ const userController = require("../controller/userController");
 const cartController = require("../controller/cartController");
 const orderController = require("../controller/orderController");
 const checkoutController = require("../controller/checkoutController");
+const reviewController = require("../controller/reviewController");
 
 router.use(isLoggedIn, async (req, res, next) => {
   if (req.user && req.user.isAdmin) {
@@ -79,7 +80,7 @@ router.delete("/remove-from-wishlist", userController.removeFromWishlist);
 
 //  invoice
 router.get("/invoice/:id/:itemId", orderController.getInvoice);
-router.get("/invoice/download/:id/:itemId", orderController.downloadInvoice);
+// router.get("/invoice/download/:id/:itemId", orderController.downloadInvoice);
 
 /**
  * User Wallet
@@ -88,5 +89,10 @@ router.get("/invoice/download/:id/:itemId", orderController.downloadInvoice);
 router.get("/wallet", userController.getWallet);
 router.post("/add-to-wallet", userController.addToWallet);
 router.post("/verify-wallet-payment", userController.verifyPayment);
+
+/**
+ * User Review
+ */
+router.post("/add-review", reviewController.postReview);
 
 module.exports = router;

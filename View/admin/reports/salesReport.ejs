@@ -58,6 +58,29 @@
       </form>
     </div>
     <div class="btn-toolbar">
+      <div class="dropdown show">
+        <a
+          class="btn btn-outline-secondary dropdown-toggle"
+          href="#"
+          role="button"
+          id="dropdownMenuLink"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          Filter
+        </a>
+
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+          <a
+            class="dropdown-item"
+            href="/admin/sales-report?startDate=<%= calculateStartDate(endDate) %>&endDate=<%- endDate %>"
+            >7 Days</a
+          >
+          <a class="dropdown-item" href="#">Another action</a>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </div>
       <button
         onclick="getExcel()"
         type="button"
@@ -218,6 +241,12 @@
       });
     }
   };
+
+  function calculateStartDate(endDate) {
+    const startDate = new Date(endDate);
+    startDate.setDate(endDate.getDate() - 7); // Subtract 7 days from endDate
+    return startDate.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+  }
 </script>
 
 <!-- <script>

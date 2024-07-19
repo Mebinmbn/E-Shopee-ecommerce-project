@@ -133,6 +133,10 @@
                         </a>
                       </div>
                     </div>
+                    <% } else {%>
+                    <div class="text-success text-center fw-semibold fs-6">
+                      <p>You have already reviewed the poroduct</p>
+                    </div>
                     <% } %> <% } %>
                   </div>
                 </div>
@@ -360,7 +364,7 @@
       <div class="modal-body modal-lg">
         <div class="card">
           <form
-            id="review_form"
+            id="reviewForm"
             action="/user/add-review"
             method="POST"
             class="card-body px-3 py-2 row"

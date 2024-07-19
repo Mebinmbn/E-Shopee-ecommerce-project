@@ -1,4 +1,4 @@
-const easyinvoice = require("easyinvoice");
+// const easyinvoice = require("easyinvoice");
 
 const fs = require("fs");
 const path = require("path");
@@ -365,113 +365,113 @@ module.exports = {
       user: req.user,
       invoiceId,
       locals,
-      // layout: "./layouts/docs/invoice.ejs",
+      layout: "./layouts/docs/invoice.ejs",
     });
   },
 
-  downloadInvoice: async (req, res) => {
-    const { id, itemId } = req.params;
+  // downloadInvoice: async (req, res) => {
+  //   const { id, itemId } = req.params;
 
-    const order = await Order.aggregate([
-      {
-        $match: {
-          _id: new mongoose.Types.ObjectId(id),
-          "items.orderID": itemId,
-        },
-      },
-      {
-        $unwind: "$items",
-      },
-      {
-        $lookup: {
-          from: "products",
-          localField: "items.product_id",
-          foreignField: "_id",
-          as: "items.product",
-        },
-      },
-      {
-        $project: {
-          _id: 1,
-          items: 1,
-          shippingAddress: 1,
-          paymentMethod: 1,
-          totalPrice: 1,
-          coupon: 1,
-          couponDiscount: 1,
-          payable: 1,
-          categoryDiscount: 1,
-          paymentStatus: 1,
-          orderStatus: 1,
-          createdAt: 1,
-        },
-      },
-    ]);
+  //   const order = await Order.aggregate([
+  //     {
+  //       $match: {
+  //         _id: new mongoose.Types.ObjectId(id),
+  //         "items.orderID": itemId,
+  //       },
+  //     },
+  //     {
+  //       $unwind: "$items",
+  //     },
+  //     {
+  //       $lookup: {
+  //         from: "products",
+  //         localField: "items.product_id",
+  //         foreignField: "_id",
+  //         as: "items.product",
+  //       },
+  //     },
+  //     {
+  //       $project: {
+  //         _id: 1,
+  //         items: 1,
+  //         shippingAddress: 1,
+  //         paymentMethod: 1,
+  //         totalPrice: 1,
+  //         coupon: 1,
+  //         couponDiscount: 1,
+  //         payable: 1,
+  //         categoryDiscount: 1,
+  //         paymentStatus: 1,
+  //         orderStatus: 1,
+  //         createdAt: 1,
+  //       },
+  //     },
+  //   ]);
 
-    // console.log(order[0].items);
+  //   // console.log(order[0].items);
 
-    var data = {
-      apiKey: "free", // Please register to receive a production apiKey: https://app.budgetinvoice.com/register
-      mode: "development", // Production or development, defaults to production
-      images: {
-        // The logo on top of your invoice
-        logo: "https://public.budgetinvoice.com/img/logo_en_original.png",
-      },
-      // Your own data
-      sender: {
-        company: "E-Shopee",
-        address: "Sample Street 123",
-        zip: "1234 AB",
-        city: "Sampletown",
-        country: "Samplecountry",
-      },
-      // Your recipient
-      client: {
-        company: order[0].shippingAddress.name,
-        address: order[0].shippingAddress.address,
-        zip: order[0].shippingAddress.zipcope,
-        city: order[0].shippingAddress.city,
-        country: "India",
-      },
-      information: {
-        // Invoice number
-        number: order[0].items.orderID,
-        // Invoice data
-        date: new Date().toISOString().slice(0, 10),
-      },
-      products: [
-        {
-          quantity: order[0].quantity,
-          description: order[0].items.product[0].product_name,
-          taxRate: 0,
-          price: order[0].items.itemTotal,
-        },
-      ],
-      // The message you would like to display on the bottom of your invoice
-      bottomNotice: "Kindly pay your invoice within 15 days.",
-      // Settings to customize your invoice
-      settings: {
-        currency: "INR", // See documentation 'Locales and Currency' for more info. Leave empty for no currency.
-      },
-    };
+  //   var data = {
+  //     apiKey: "free", // Please register to receive a production apiKey: https://app.budgetinvoice.com/register
+  //     mode: "development", // Production or development, defaults to production
+  //     images: {
+  //       // The logo on top of your invoice
+  //       logo: "https://public.budgetinvoice.com/img/logo_en_original.png",
+  //     },
+  //     // Your own data
+  //     sender: {
+  //       company: "E-Shopee",
+  //       address: "Sample Street 123",
+  //       zip: "1234 AB",
+  //       city: "Sampletown",
+  //       country: "Samplecountry",
+  //     },
+  //     // Your recipient
+  //     client: {
+  //       company: order[0].shippingAddress.name,
+  //       address: order[0].shippingAddress.address,
+  //       zip: order[0].shippingAddress.zipcope,
+  //       city: order[0].shippingAddress.city,
+  //       country: "India",
+  //     },
+  //     information: {
+  //       // Invoice number
+  //       number: order[0].items.orderID,
+  //       // Invoice data
+  //       date: new Date().toISOString().slice(0, 10),
+  //     },
+  //     products: [
+  //       {
+  //         quantity: order[0].quantity,
+  //         description: order[0].items.product[0].product_name,
+  //         taxRate: 0,
+  //         price: order[0].items.itemTotal,
+  //       },
+  //     ],
+  //     // The message you would like to display on the bottom of your invoice
+  //     bottomNotice: "Kindly pay your invoice within 15 days.",
+  //     // Settings to customize your invoice
+  //     settings: {
+  //       currency: "INR", // See documentation 'Locales and Currency' for more info. Leave empty for no currency.
+  //     },
+  //   };
 
-    //Create your invoice! Easy!
-    const result = await easyinvoice.createInvoice(data);
-    // console.log("PDF base64 string: ", result.pdf);
+  //   //Create your invoice! Easy!
+  //   const result = await easyinvoice.createInvoice(data);
+  //   // console.log("PDF base64 string: ", result.pdf);
 
-    // Convert base64 string to buffer
-    const pdfBuffer = Buffer.from(result.pdf, "base64");
+  //   // Convert base64 string to buffer
+  //   const pdfBuffer = Buffer.from(result.pdf, "base64");
 
-    // Set headers for file download
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename=${order[0].items.orderID}_invoice_${Date.now()}.pdf`
-    );
+  //   // Set headers for file download
+  //   res.setHeader("Content-Type", "application/pdf");
+  //   res.setHeader(
+  //     "Content-Disposition",
+  //     `attachment; filename=${order[0].items.orderID}_invoice_${Date.now()}.pdf`
+  //   );
 
-    // Send the PDF buffer as a response
-    res.send(pdfBuffer);
-  },
+  //   // Send the PDF buffer as a response
+  //   res.send(pdfBuffer);
+  // },
 
   // Cancel and Return
   cancelOrder: async (req, res) => {
