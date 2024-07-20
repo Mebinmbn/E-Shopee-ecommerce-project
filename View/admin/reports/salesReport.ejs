@@ -21,6 +21,7 @@
   class="container d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
 >
   <h1 class="h2"><%= locals.title ? locals.title : 'Product Offers' %></h1>
+  <p id="para"></p>
 
   <div class="d-flex align-items-center gap-2">
     <div class="btn-toolbar mb-2 mb-md-0">
@@ -48,7 +49,7 @@
               value="<%- endDate %>"
             />
           </div>
-          <div class="form-group">
+          <div class="form-group pt-3">
             <button type="submit" class="btn btn-primary">
               <i class="bi bi-search"></i>
               Get Report
@@ -57,34 +58,17 @@
         </div>
       </form>
     </div>
-    <div class="btn-toolbar">
-      <div class="dropdown show">
-        <a
-          class="btn btn-outline-secondary dropdown-toggle"
-          href="#"
-          role="button"
-          id="dropdownMenuLink"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-        >
-          Filter
-        </a>
-
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-          <a
-            class="dropdown-item"
-            href="/admin/sales-report?startDate=<%= calculateStartDate(endDate) %>&endDate=<%- endDate %>"
-            >7 Days</a
-          >
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
-      </div>
+    <div class="btn-toolbar pt-3">
+      <select id="dropdownOptions" onchange="filter()">
+        <option value="">Filter</option>
+        <option value="7">This Week</option>
+        <option value="option2">This Month</option>
+        <option value="option3">This Year</option>
+      </select>
       <button
         onclick="getExcel()"
         type="button"
-        class="btn btn-outline-success"
+        class="btn btn-outline-success mx-2"
       >
         <i class="bi bi-file-earmark-spreadsheet"></i>Excel
       </button>
@@ -242,132 +226,166 @@
     }
   };
 
-  function calculateStartDate(endDate) {
-    const startDate = new Date(endDate);
-    startDate.setDate(endDate.getDate() - 7); // Subtract 7 days from endDate
-    return startDate.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+  function filter() {
+    var dropdown = document.getElementById("dropdownOptions");
+    var selectedOption = dropdown.value;
+    var startDate, endDate, url;
+    var today = new Date();
+    var para = document.getElementById("para");
+    switch (selectedOption) {
+      case "7":
+        startDate = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate() - today.getDay()
+        );
+        endDate = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate() + (6 - today.getDay())
+        );
+        url = `/admin/sales-report?startDate=${startDate}&endDate=${endDate}`;
+        window.location.href = url;
+        break;
+      case "option2":
+        startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+        endDate = today;
+        url = `/admin/sales-report?startDate=${startDate}&endDate=${endDate}`;
+        window.location.href = url;
+        break;
+      case "option3":
+        startDate = new Date(today.getFullYear(), 0, 1);
+        endDate = today;
+        url = `/admin/sales-report?startDate=${startDate}&endDate=${endDate}`;
+        window.location.href = url;
+        break;
+      default:
+        para.textContent = ""; // Clear the paragraph if no valid option is selected
+        break;
+    }
   }
 </script>
 
+//
 <!-- <script>
   //pdf download
-  document.getElementById("exportToButton").addEventListener("click", function() {
-    Swal.fire({
-      title: 'Are you sure',
-      text: "Are you want to download sales Report",
-      icon: 'info',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#D3DBEE',
-      confirmButtonText: 'Download'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire(
-          'Downloading..',
-          'Your file is being downloadig.',
-          'success'
-        ).then(async () => {
+//   document.getElementById("exportToButton").addEventListener("click", function() {
+//     Swal.fire({
+//       title: 'Are you sure',
+//       text: "Are you want to download sales Report",
+//       icon: 'info',
+//       showCancelButton: true,
+//       confirmButtonColor: '#3085d6',
+//       cancelButtonColor: '#D3DBEE',
+//       confirmButtonText: 'Download'
+//     }).then((result) => {
+//       if (result.isConfirmed) {
+//         Swal.fire(
+//           'Downloading..',
+//           'Your file is being downloadig.',
+//           'success'
+//         ).then(async () => {
 
-          const dataSource = shield.DataSource.create({
-            data: "#salesReportTable",
-            schema: {
-              type: "table",
-              fields: {
-                User: {
-                  type: String
-                },
-                Products: {
-                  type: String
-                },
-                Ordered_Date: {
-                  type: String
-                },
-                Delivered_Date: {
-                  type: String
-                },
-                Quantity: {
-                  type: String
-                },
-                Category: {
-                  type: String
-                },
-                Payment: {
-                  type: String
-                },
-                Amount: {
-                  type: Number
-                }
-              }
-            }
-          });
+//           const dataSource = shield.DataSource.create({
+//             data: "#salesReportTable",
+//             schema: {
+//               type: "table",
+//               fields: {
+//                 User: {
+//                   type: String
+//                 },
+//                 Products: {
+//                   type: String
+//                 },
+//                 Ordered_Date: {
+//                   type: String
+//                 },
+//                 Delivered_Date: {
+//                   type: String
+//                 },
+//                 Quantity: {
+//                   type: String
+//                 },
+//                 Category: {
+//                   type: String
+//                 },
+//                 Payment: {
+//                   type: String
+//                 },
+//                 Amount: {
+//                   type: Number
+//                 }
+//               }
+//             }
+//           });
 
-          dataSource.read().then(function(data) {
-            var pdf = new shield.exp.PDFDocument({
-              author: "TimesCart",
-              created: new Date()
-            });
-            pdf.addPage("a4", "landscape");
-            pdf.table(
-              50,
-              50,
-              data,
-              [{
-                  field: "User",
-                  title: "User",
-                  width: 70
-                },
-                {
-                  field: "Products",
-                  title: "Product Name",
-                  width: 100
-                },
-                {
-                  field: "Order Date",
-                  title: "Ordered Date",
-                  width: 100
-                },
-                {
-                  field: "Delivered_Date",
-                  title: "Delivered Date",
-                  width: 100
-                },
-                {
-                  field: "Quantity",
-                  title: "Quantity",
-                  width: 70
-                },
-                {
-                  field: "Category",
-                  title: "Category",
-                  width: 100
-                },
-                {
-                  field: "Payment",
-                  title: "Payment",
-                  width: 100
-                },
-                {
-                  field: "Amount",
-                  title: "Amount",
-                  width: 70
-                },
+//           dataSource.read().then(function(data) {
+//             var pdf = new shield.exp.PDFDocument({
+//               author: "TimesCart",
+//               created: new Date()
+//             });
+//             pdf.addPage("a4", "landscape");
+//             pdf.table(
+//               50,
+//               50,
+//               data,
+//               [{
+//                   field: "User",
+//                   title: "User",
+//                   width: 70
+//                 },
+//                 {
+//                   field: "Products",
+//                   title: "Product Name",
+//                   width: 100
+//                 },
+//                 {
+//                   field: "Order Date",
+//                   title: "Ordered Date",
+//                   width: 100
+//                 },
+//                 {
+//                   field: "Delivered_Date",
+//                   title: "Delivered Date",
+//                   width: 100
+//                 },
+//                 {
+//                   field: "Quantity",
+//                   title: "Quantity",
+//                   width: 70
+//                 },
+//                 {
+//                   field: "Category",
+//                   title: "Category",
+//                   width: 100
+//                 },
+//                 {
+//                   field: "Payment",
+//                   title: "Payment",
+//                   width: 100
+//                 },
+//                 {
+//                   field: "Amount",
+//                   title: "Amount",
+//                   width: 70
+//                 },
 
-              ], {
-                margins: {
-                  top: 50
-                }
-              }
-            );
+//               ], {
+//                 margins: {
+//                   top: 50
+//                 }
+//               }
+//             );
 
-            pdf.saveAs({
-              fileName: "SalesReport"
-            });
-          });
+//             pdf.saveAs({
+//               fileName: "SalesReport"
+//             });
+//           });
 
 
-        })
-      }
+//         })
+//       }
 
-    })
-  });
-</script> -->
+//     })
+//   });
+// </script> -->

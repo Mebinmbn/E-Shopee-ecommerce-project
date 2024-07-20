@@ -480,7 +480,7 @@ const showRazorpay = (order, user) => {
   rzp1.open();
   rzp1.on("payment.failed", function (response) {
     swal.fire("Failed!", response.error.description, "error").then(() => {
-      location.assign("/");
+      location.assign("/checkout");
     });
   });
 };
