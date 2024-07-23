@@ -29,7 +29,11 @@ module.exports = {
 
     console.log(confirmedOrders);
 
-    const ordersCount = await Orders.find().countDocuments();
+    const ordersCount = await Orders.find({
+      status: { $in: ["Confirmed", "Delivered", "Shipped"] },
+    }).countDocuments();
+
+    console.log("total ordrs ", ordersCount);
 
     let bestSellingProducts = await bestSelling.getBestSellingProducts();
     let bestSellingBrands = await bestSelling.getBestSellingBrands();

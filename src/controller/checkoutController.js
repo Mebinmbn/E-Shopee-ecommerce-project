@@ -262,7 +262,7 @@ module.exports = {
     try {
       const { paymentMethod, address } = req.body;
 
-      // console.log(req.body);
+      console.log(req.body);
 
       let shippingAddress = await Address.findOne({
         _id: address,
@@ -320,6 +320,13 @@ module.exports = {
           : "Pending";
 
       // console.log(userCart.items);
+      let discount = 0;
+
+      userCart.items.forEach((item) => {
+        console.log(item);
+      });
+
+      console.log("discount ", discount);
 
       let order;
 
@@ -335,6 +342,7 @@ module.exports = {
           paymentStatus,
           status,
           shippingAddress,
+          discount,
         });
 
         order.items.forEach((item) => {
@@ -350,6 +358,7 @@ module.exports = {
           paymentStatus,
           status,
           shippingAddress,
+          discount,
         });
       }
       order.items.forEach((item) => {

@@ -124,8 +124,8 @@
                       Discount :
                     </th>
                     <td class="border-0 text-end">
-                      - ₹<%- order.couponDiscount ? order.couponDiscount :
-                      '0.00' %>
+                      - ₹<%- order.couponDiscount ?
+                      order.couponDiscount.toFixed(2) : '0.00' %>
                     </td>
                   </tr>
                   <!-- end tr -->

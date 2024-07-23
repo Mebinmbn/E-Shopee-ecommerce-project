@@ -107,7 +107,7 @@
             <th class="sorting" scope="col">Coupon</th>
             <th class="sorting" scope="col">Coupon Discount</th>
             <th class="sorting" scope="col">Payable</th>
-            <th class="sorting" scope="col">Category Discount</th>
+            <!-- <th class="sorting" scope="col">Category Discount</th> -->
           </tr>
         </thead>
         <tbody>
@@ -139,9 +139,8 @@
             <td class="text-uppercase">
               <%=order.coupon[0]?.code ? order.coupon[0].code : "No Coupon"%>
             </td>
-            <td><%=order.couponDiscount%></td>
+            <td><%=order.couponDiscount.toFixed(2)%></td>
             <td><%=order.payable.toFixed(2)%></td>
-            <td class="text-center"><%=order.categoryDiscount.toFixed(2)%></td>
           </tr>
           <% }) %>
         </tbody>
@@ -266,7 +265,6 @@
   }
 </script>
 
-//
 <!-- <script>
   //pdf download
 //   document.getElementById("exportToButton").addEventListener("click", function() {

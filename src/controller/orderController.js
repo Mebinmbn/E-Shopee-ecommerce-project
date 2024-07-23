@@ -261,7 +261,7 @@ module.exports = {
             order.items.inReturn = false;
             order.items.return = false;
             order.items.needHelp = false;
-            // order.items.status = 'Return Requested';
+            order.items.status = "Return Requested";
             order.items.track = 10;
           }
 
@@ -273,7 +273,7 @@ module.exports = {
             order.items.inReturn = true;
             order.items.return = false;
             order.items.needHelp = false;
-            // order.items.status = isInReturn.status;
+            order.items.status = isInReturn.status;
             order.items.track = 60;
           }
 

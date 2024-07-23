@@ -141,7 +141,7 @@ const orderSchema = new Schema(
     payable: {
       type: Number,
     },
-    categoryDiscount: {
+    discount: {
       type: Number,
       default: 0,
     },

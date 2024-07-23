@@ -91,7 +91,8 @@ module.exports = {
             $push: {
               productDetails: {
                 product_name: "$items.productDetails.product_name",
-                price: "$items.price",
+                price: "$items.productDetails.sellingPrice",
+                offerPrice: "$items.productDetails.offerDiscountPrice",
               },
               quantity: "$items.quantity",
               color: "$items.color.name",
@@ -103,7 +104,34 @@ module.exports = {
       },
     ]);
 
-    console.log("orders ", orders);
+    // orders.forEach((order) => {
+    //   console.log(`Order ID: ${order._id}`);
+    //   console.log(`User ID: ${order.userID[0]._id}`); // Assuming userID is an array with user details
+    //   console.log(`Shipping Address: ${JSON.stringify(order.shippingAddress)}`);
+    //   console.log(`Payment Method: ${order.paymentMethod}`);
+    //   console.log(`Status: ${order.status}`);
+    //   console.log(`Total Amount: ${order.totalAmount}`);
+    //   console.log(`Coupon: ${JSON.stringify(order.coupon)}`);
+    //   console.log(`Coupon Discount: ${order.couponDiscount}`);
+    //   console.log(`Payable Amount: ${order.payable}`);
+    //   console.log(`Category Discount: ${order.categoryDiscount}`);
+    //   console.log(`Created At: ${order.createdAt}`);
+
+    //   console.log("Ordered Items:");
+    //   order.orderedItems.forEach((item, index) => {
+    //     console.log(`  Item ${index + 1}:`);
+    //     console.log(`    Product Name: ${item.productDetails.product_name}`);
+    //     console.log(`    Price: ${item.productDetails.price}`);
+    //     console.log(`    Offer Price: ${item.productDetails.offerPrice}`); // Assuming offerPrice is included
+    //     console.log(`    Offer Price: ${item.productDetails.offer}`); // Assuming offerPrice is included
+    //     console.log(`    Quantity: ${item.quantity}`);
+    //     console.log(`    Color: ${item.color}`);
+    //     console.log(`    Size: ${item.size}`);
+    //     console.log(`    Item Total: ${item.itemTotal}`);
+    //   });
+
+    //   console.log("-----------------------------------");
+    // });
 
     // Ordered Item details
     // orders.forEach((order) => {

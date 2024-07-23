@@ -26,7 +26,7 @@ const attributeController = require("../controller/attributeController");
 /* Common Midleware for admin routes*/
 router.use(isAdmin, (req, res, next) => {
   if (req.user.isAdmin) {
-    console.log("reqUser", req.user);
+    // console.log("reqUser", req.user);
     res.locals.admin = req.user;
   }
   // res.locals.success = req.flash("success");
