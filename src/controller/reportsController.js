@@ -292,7 +292,7 @@ module.exports = {
 
       // endDate = endDate + " 23:59:59";
 
-      res.render("admin/reports/pdf", {
+      res.render("/admin/reports/pdf", {
         startDate,
         endDate,
         orders,

@@ -26,58 +26,116 @@
       </div>
       <!-- Wishlist-->
       <!-- Item-->
-      <% if (products && products.length > 0) { %> <% products.forEach((item) =>
-      { %>
-      <div
-        class="d-sm-flex justify-content-between mt-lg-4 mb-4 pb-3 pb-sm-2 border-bottom text-capitalize"
-      >
-        <div
-          class="d-block d-sm-flex align-items-start text-center text-sm-start"
-        >
-          <a
-            class="d-block flex-shrink-0 mx-auto me-sm-4"
-            href="/shop/product/<%- item._id %>"
-            style="width: 10rem"
+      <% if (products && products.length > 0) { %>
+
+      <div class="container table-responsive">
+        <div class="row col-md-12">
+          <% products.forEach((item) => { %>
+          <div
+            class="d-sm-flex justify-content-between mt-lg-4 mb-4 pb-3 pb-sm-2 border-bottom text-capitalize"
           >
-            <img
-              class="img-fluid img-thumbnail"
-              src="/uploads/product-images/<%- item.primary_image.name %>"
-              alt="<%- item.product_name %>"
-            />
-          </a>
-          <div class="pt-2">
-            <h3 class="product-title fs-base mb-2">
-              <a href="/shop/product/<%- item._id %>"
-                ><%- item.product_name %></a
+            <div
+              class="d-block d-sm-flex align-items-start text-center text-sm-start"
+            >
+              <a
+                class="d-block flex-shrink-0 mx-auto me-sm-4"
+                href="/shop/product/<%- item._id %>"
+                style="width: 10rem"
               >
-            </h3>
-            <div class="fs-sm">
-              <span class="text-muted me-2">Brand:</span>
-              <%- item.brand.name %>
-            </div>
-            <!-- <div class="fs-sm">
+                <img
+                  class="img-fluid img-thumbnail"
+                  src="/uploads/product-images/<%- item.primary_image.name %>"
+                  alt="<%- item.product_name %>"
+                />
+              </a>
+              <div class="pt-2">
+                <h3 class="product-title fs-base mb-2">
+                  <a href="/shop/product/<%- item._id %>"
+                    ><%- item.product_name %></a
+                  >
+                </h3>
+                <div class="fs-sm">
+                  <span class="text-muted me-2">Brand:</span>
+                  <%- item.brand.name %>
+                </div>
+                <!-- <div class="fs-sm">
                                         <span class="text-muted me-2">Color:</span>
                                         Khaki
                                     </div> -->
-            <div class="fs-lg text-accent pt-2">
-              <span class="text-muted me-2">Price:</span>
-              <!-- $79.<small>50</small> -->
-              <%- item.sellingPrice %>
+                <div class="fs-lg text-accent pt-2">
+                  <span class="text-muted me-2">Price:</span>
+                  <!-- $79.<small>50</small> -->
+                  <%- item.sellingPrice %>
+                </div>
+              </div>
+            </div>
+            <div class="pt-2 ps-sm-3 mx-auto mx-sm-0 text-center">
+              <button
+                class="btn btn-outline-danger btn-sm"
+                onclick="wishlistRemove('<%- item._id %>')"
+                type="button"
+              >
+                <i class="ci-trash me-2"></i>
+                Remove
+              </button>
             </div>
           </div>
+          <% }) %>
         </div>
-        <div class="pt-2 ps-sm-3 mx-auto mx-sm-0 text-center">
-          <button
-            class="btn btn-outline-danger btn-sm"
-            onclick="wishlistRemove('<%- item._id %>')"
-            type="button"
-          >
-            <i class="ci-trash me-2"></i>
-            Remove
-          </button>
-        </div>
+        <!-- Pagination-->
+        <% if (products.length > 0 && nextPage || current == pages) { %>
+        <nav aria-label="Product Pagination">
+          <ul class="pagination justify-content-center mt-5">
+            <% if (current == 1) { %>
+            <li class="page-item disabled">
+              <a href="#" class="page-link">First</a>
+            </li>
+
+            <% } else { %>
+            <li class="page-item">
+              <a href="/user/wishlist/?page=1" class="page-link">First</a>
+            </li>
+            <% } %> <% var i = (Number(current)> 5 ? Number(current) - 4 : 1) %>
+            <% if (i !== 1) { %>
+            <li class="page-item disabled">
+              <a href="#" class="page-link">...</a>
+            </li>
+            <% } %> <% for( ; i < Number(current) + 4 && i <= pages ; i++ ) { %>
+            <% if (i == current) { %>
+            <li class="page-item disabled">
+              <a href="#" class="page-link"><%= i %> </a>
+            </li>
+            <% } else { %>
+            <li class="page-item">
+              <a
+                href="/user/wishlist?page=<%= i %>"
+                class="page-link text-primary fw-bold"
+                ><%= i %></a
+              >
+            </li>
+
+            <% } %> <% if (i == Number(current)+ 4 && i < pages) { %>
+            <li class="page-item disabled">
+              <a href="#" class="page-link">...</a>
+            </li>
+            <% } %> <% } %> <% if (current == pages) { %>
+            <li class="page-item disabled">
+              <a href="#" class="page-link">Last</a>
+            </li>
+            <% } else { %>
+            <li class="page-item">
+              <a href="/user/wishlist?page=<%= pages %>" class="page-link"
+                >Last</a
+              >
+            </li>
+
+            <% } %>
+          </ul>
+        </nav>
+        <% } %>
       </div>
-      <% }) %> <% } else { %>
+
+      <% } else { %>
       <div class="container my-5 mb-6">
         <div class="col my-5 text-center">
           <h2 class="text-muted">Wishlist is empty...</h2>

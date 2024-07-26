@@ -204,11 +204,22 @@ module.exports = {
     const locals = {
       title: "E-Shopee - Wishlist",
     };
+
+    let perPage = 3;
+    let page = req.query.page || 1;
+
     let user = await User.findById(req.user.id);
-    let wishlist = await WishList.findById(user.wishlist).populate({
-      path: "products",
-      populate: { path: "brand" },
-    });
+    let wishlist = await WishList.findById(user.wishlist)
+      .populate({
+        path: "products",
+        populate: { path: "brand" },
+        options: {
+          sort: { createdAt: -1 }, // Sort products by createdAt descending
+          skip: perPage * (page - 1), // Skip to the correct page
+          limit: perPage,
+        },
+      })
+      .exec();
     // console.log(wishlist);
     let products;
 
@@ -218,11 +229,21 @@ module.exports = {
       products = wishlist.products;
     }
 
+    let wishlistData = await WishList.findOne(user.wishlist);
+    console.log("count == ", wishlistData);
+    let count = wishlistData.products.length;
+    // console.log("count == ", wishlistData);
+    const nextPage = parseInt(page) + 1;
+    const hasNextPage = nextPage <= Math.ceil(count / perPage);
+
     res.render("user/wishlist", {
       user,
       locals,
       wishlist,
       products,
+      current: page,
+      pages: Math.ceil(count / perPage),
+      nextPage: hasNextPage ? nextPage : null,
     });
   },
 
@@ -338,27 +359,39 @@ module.exports = {
       title: "E-Shopee - User Wallet",
     };
 
-    // TODO : pagination with 14 results per page
+    let perPage = 7;
+    let page = req.query.page || 1;
 
-    let userWallet = await Wallet.findOne({ userId: req.user.id });
     let user = await User.findById(req.user.id);
+    let walletDetails = await Wallet.findOne({ userId: req.user.id });
 
-    if (userWallet) {
-      userWallet.transactions.reverse();
-    }
+    let count = walletDetails.transactions.length;
+    console.log(count);
 
-    if (!userWallet) {
-      userWallet = {
-        balance: 0,
-        transactions: [],
-      };
-    }
+    let start = perPage * (page - 1);
+    let end = start + perPage;
+
+    let reversedTransactions = walletDetails.transactions.reverse();
+    let paginatedTransations = reversedTransactions.splice(start, end);
+
+    let userWallet = {
+      balance: walletDetails.balance,
+      transactions: paginatedTransations,
+    };
 
     console.log(userWallet);
+
+    const nextPage = parseInt(page) + 1;
+    const hasNextPage = nextPage <= Math.ceil(count / perPage);
+
+    // console.log(userWallet);
     res.render("user/wallet", {
       user,
       locals,
       userWallet,
+      current: page,
+      pages: Math.ceil(count / perPage),
+      nextPage: hasNextPage ? nextPage : null,
     });
   },
 

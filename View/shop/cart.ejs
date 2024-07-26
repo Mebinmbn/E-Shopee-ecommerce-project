@@ -182,15 +182,14 @@
               </li>
               <li class="order-summary-item">
                 <span
-                  >Shipping and handling
-                  <span class="text-muted">(free)</span></span
-                ><span>₹0.00</span>
+                  >Shipping and handling <span class="text-muted"></span></span
+                ><span id="deliveryCharge">₹ <%= deliveryCharge %></span>
               </li>
               <!-- <li class="order-summary-item"><span>Tax</span><span>₹0.00</span></li> -->
               <li class="order-summary-item border-0">
                 <span>Total</span
                 ><strong id="grandTotal" class="order-summary-total"
-                  >₹<%= totalPrice %></strong
+                  >₹<%= payable %></strong
                 >
               </li>
             </ul>

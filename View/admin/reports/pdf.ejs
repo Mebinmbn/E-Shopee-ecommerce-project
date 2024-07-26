@@ -17,7 +17,8 @@
   </div>
 </section> -->
 
-<div id="salesReport"
+<div
+  id="salesReport"
   class="container d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
 >
   <h1 class="h2"><%= locals.title ? locals.title : 'Product Offers' %></h1>
@@ -48,11 +49,9 @@
               value="<%- endDate %>"
             />
           </div>
-
         </div>
       </form>
     </div>
-
   </div>
 </div>
 
@@ -125,14 +124,14 @@
               DIS
             </th>
 
-            <th
+            <!-- <th
               class="text-dark text-center"
               style="font-size: 15px"
               scope="col"
               class="sorting"
             >
               CAT DIS
-            </th>
+            </th> -->
 
             <th
               class="text-dark text-center"
@@ -147,7 +146,9 @@
           <% for(let i=0; i < orders.length ;i++) { %>
 
           <tr data-id="" class="text-center" style="font-size: medium">
-            <td data-title="Name"><%=orders[i]._id.toString().slice(-7).toUpperCase()%></td>
+            <td data-title="Name">
+              <%=orders[i]._id.toString().slice(-7).toUpperCase()%>
+            </td>
 
             <td style="max-width: 150px" data-title="Name">
               <% const options={ year: 'numeric' , month: 'short' , day:
@@ -161,8 +162,8 @@
                 <% for(let j=0 ; j< orders[i].orderedItems.length ; j++ ){%>
 
                 <li class="text-uppercase list-unstyled mt-3">
-                  <%=orders[i].orderedItems[j].productDetails.product_name%>
-                  ( <%=orders[i].orderedItems[j].quantity%> )
+                  <%=orders[i].orderedItems[j].productDetails.product_name%> (
+                  <%=orders[i].orderedItems[j].quantity%> )
                 </li>
 
                 <% }%>
@@ -180,13 +181,13 @@
             </td>
 
             <td style="min-width: 80px" data-title="Mobile">
-              <%=orders[i].couponDiscount%>
+              <%=orders[i].couponDiscount.toFixed(2)%>
             </td>
 
-            <td data-title="Mobile" class="text-center">
+            <!-- <td data-title="Mobile" class="text-center">
               <% if(orders[i].productDetails ){%>
               <%=orders[i].categoryDiscount%> <%} else {%> 0 <%}%>
-            </td>
+            </td> -->
 
             <td style="min-width: 80px" data-title="Mobile">
               <%=orders[i].totalAmount%>

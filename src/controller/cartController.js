@@ -73,6 +73,8 @@ const handleCartUpdate = async (req, res, increment = true) => {
       // }
 
       let totalPrice = 0;
+      let deliveryCharge;
+
       let totalPriceBeforeOffer = 0;
       for (const prod of userCart.items) {
         prod.price = prod.product_id.onOffer
@@ -86,6 +88,19 @@ const handleCartUpdate = async (req, res, increment = true) => {
       }
 
       userCart.totalPrice = totalPrice;
+
+      if (totalPrice < 500) {
+        deliveryCharge = 40;
+      } else if (totalPrice < 1000) {
+        deliveryCharge = 30;
+      } else if (totalPrice < 3000) {
+        deliveryCharge = 20;
+      } else {
+        deliveryCharge = 0;
+      }
+      userCart.deliveryCharge = deliveryCharge;
+      userCart.payable = totalPrice + deliveryCharge;
+
       await userCart.save();
       // console.log(userCart);
       const currentItem = userCart.items.find(
@@ -95,10 +110,15 @@ const handleCartUpdate = async (req, res, increment = true) => {
       );
 
       console.log(totalPrice);
+      let payable = userCart.payable;
 
-      return res
-        .status(200)
-        .json({ success: true, cart: currentItem, totalPrice });
+      return res.status(200).json({
+        success: true,
+        cart: currentItem,
+        totalPrice,
+        deliveryCharge,
+        payable,
+      });
     } else {
       return res.status(400).json({
         success: false,
@@ -128,6 +148,7 @@ module.exports = {
 
       let errors = [];
       let totalPrice = 0;
+      let = deliveryCharge = 0;
       if (!cart) {
         cart = new Cart({
           userId,
@@ -148,7 +169,18 @@ module.exports = {
         }
 
         cart.totalPrice = totalPrice;
-        cart.payable = totalPrice;
+
+        if (totalPrice < 500) {
+          deliveryCharge = 40;
+        } else if (totalPrice < 1000) {
+          deliveryCharge = 30;
+        } else if (totalPrice < 3000) {
+          deliveryCharge = 20;
+        } else {
+          deliveryCharge = 0;
+        }
+        cart.deliveryCharge = deliveryCharge;
+        cart.payable = totalPrice + deliveryCharge;
 
         // if category offer is active or product offer is active
 
@@ -205,7 +237,9 @@ module.exports = {
       res.render("shop/cart", {
         cartList: cart.items,
         cartCount: cart.items.length,
+        deliveryCharge,
         totalPrice,
+        payable: cart.payable,
         user,
         errorMsg: errors,
       });

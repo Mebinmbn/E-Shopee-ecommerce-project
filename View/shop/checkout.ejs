@@ -37,6 +37,13 @@
             </div>
           </li>
           <% }) %>
+          <li class="list-group-item d-flex justify-content-between bg-body-tertiary" >
+            <div class="text-muted">
+              <h6 class="my-0">Shipping Charges</h6>
+              
+            </div>
+            <span class="" id="discountAmount">₹<%- deliveryCharge %></span>
+          </li>
           <li class="list-group-item d-flex justify-content-between bg-body-tertiary d-none" id="appliedCoupon">
             <div class="text-success">
               <h6 class="my-0">Coupon code</h6>
@@ -50,13 +57,13 @@
               <h6 class="my-0">Coupon code</h6>
               <small class="text-uppercase" id="coupon"><%- userCart.coupon.code %></small>
             </div>
-            <span class="text-success" id="discountAmount">−₹<%- userCart.couponDiscount.toFixed(2) %></span>
+            <span class="text-success" id="discountAmount">−₹<%- userCart.couponDiscount.toFixed(0) %></span>
           </li>
           <% } %>
 
           <li class="list-group-item d-flex justify-content-between">
             <span>Grand Total (INR)</span>
-            <strong>₹<span id="grandTotal"><%- totalPrice %></span></strong>
+            <strong>₹<span id="grandTotal"><%- totalPrice.toFixed(0) %></span></strong>
           </li>
         </ul>
 

@@ -14,18 +14,18 @@
 </section>
 
 <div class="container mb-5">
-
   <div class="row">
     <%- include('../partials/user/sidebar.ejs') %>
     <!-- Content  -->
     <section class="col-lg-8">
-
       <div class="container row justify-content-between">
-        <p class="lead bg-grey-light fw-semibold text-uppercase p-2">Balance: ₹<%- userWallet ?  userWallet?.balance : 0 %></p>
+        <p class="lead bg-grey-light fw-semibold text-uppercase p-2">
+          Balance: ₹<%- userWallet ? userWallet?.balance : 0 %>
+        </p>
         <!-- <button type="button" data-bs-toggle="modal" data-bs-target="#addMoneyModal" class="btn btn-outline-success">Add Money +</button> -->
       </div>
 
-      <div class="table-responsive py-5 text-capitalize">
+      <div class="container table-responsive py-5 text-capitalize">
         <table class="table table-striped table-hover">
           <thead class="bg-dark-light">
             <tr>
@@ -36,50 +36,122 @@
             </tr>
           </thead>
           <tbody>
-            <% if (userWallet.transactions.length !== 0) { %>
-              <% userWallet.transactions.forEach((element) => { %>
-                <tr class="align-middle <%- element.type === 'Credit' ? 'bg-success-light' : 'bg-danger-light' %>">
-                  <td><%= element.date.toDateString() %></td>
-                  <td><%- element.amount %></td>
-                  <td><%- element.message %></td>
-                  <td><%- element.type %></td>
-                </tr>
-              <% }) %>
-
-            <% } else { %>
-              <tr>
-                <td colspan="4" class="text-center">No transactions yet</td>
-              </tr>
+            <% if (userWallet.transactions.length !== 0) { %> <%
+            userWallet.transactions.forEach((element) => { %>
+            <tr
+              class="align-middle <%- element.type === 'Credit' ? 'bg-success-light' : 'bg-danger-light' %>"
+            >
+              <td><%= element.date.toDateString() %></td>
+              <td><%- element.amount %></td>
+              <td><%- element.message %></td>
+              <td><%- element.type %></td>
+            </tr>
+            <% }) %> <% } else { %>
+            <tr>
+              <td colspan="4" class="text-center">No transactions yet</td>
+            </tr>
             <% } %>
           </tbody>
-
         </table>
 
+        <!-- Pagination-->
+        <% if (userWallet.transactions.length > 0 && nextPage || current ==
+        pages) { %>
+        <nav aria-label="Product Pagination">
+          <ul class="pagination justify-content-center mt-5">
+            <% if (current == 1) { %>
+            <li class="page-item disabled">
+              <a href="#" class="page-link">First</a>
+            </li>
+
+            <% } else { %>
+            <li class="page-item">
+              <a href="/user/wallet?page=1" class="page-link">First</a>
+            </li>
+            <% } %> <% var i = (Number(current)> 5 ? Number(current) - 4 : 1) %>
+            <% if (i !== 1) { %>
+            <li class="page-item disabled">
+              <a href="#" class="page-link">...</a>
+            </li>
+            <% } %> <% for( ; i < Number(current) + 4 && i <= pages ; i++ ) { %>
+            <% if (i == current) { %>
+            <li class="page-item disabled">
+              <a href="#" class="page-link"><%= i %> </a>
+            </li>
+            <% } else { %>
+            <li class="page-item">
+              <a href="/user/wallet?page=<%= i %>" class="page-link"
+                ><%= i %></a
+              >
+            </li>
+
+            <% } %> <% if (i == Number(current)+ 4 && i < pages) { %>
+            <li class="page-item disabled">
+              <a href="#" class="page-link">...</a>
+            </li>
+            <% } %> <% } %> <% if (current == pages) { %>
+            <li class="page-item disabled">
+              <a href="#" class="page-link">Last</a>
+            </li>
+            <% } else { %>
+            <li class="page-item">
+              <a href="/user/wallet?page=<%= pages %>" class="page-link"
+                >Last</a
+              >
+            </li>
+
+            <% } %>
+          </ul>
+        </nav>
+        <% } %>
+      </div>
     </section>
   </div>
 </div>
 
-
 <!-- Add Money to Wallet Modal -->
 
 <!-- Modal -->
-<div class="modal fade" id="addMoneyModal" tabindex="-1" aria-labelledby="addMoneyModalLabel" aria-hidden="true">
+<div
+  class="modal fade"
+  id="addMoneyModal"
+  tabindex="-1"
+  aria-labelledby="addMoneyModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="addMoneyModalLabel">Add Money to Wallet</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body">
         <form id="addMoneyForm" action="/user/add-to-wallet" method="POST">
           <div class="mb-3 form-group">
             <label for="amount" class="form-label">Amount</label>
-            <input type="number" class="form-control" id="amount" name="amount" placeholder="Enter Amount" required>
+            <input
+              type="number"
+              class="form-control"
+              id="amount"
+              name="amount"
+              placeholder="Enter Amount"
+              required
+            />
             <small></small>
           </div>
           <div class="mb-3">
             <label for="note" class="form-label">Note (Optional)</label>
-            <textarea class="form-control" id="note" name="note" rows="3"></textarea>
+            <textarea
+              class="form-control"
+              id="note"
+              name="note"
+              rows="3"
+            ></textarea>
           </div>
           <button type="submit" class="btn btn-primary">Add Money</button>
         </form>
@@ -87,8 +159,6 @@
     </div>
   </div>
 </div>
-
-
 
 <script defer>
   const showError = (input, message) => {
@@ -121,12 +191,11 @@
   };
 
   const checkAmount = () => {
-    let value = false
-    const amountEl = document.querySelector('#amount')
-    const amount = amountEl.value
+    let value = false;
+    const amountEl = document.querySelector("#amount");
+    const amount = amountEl.value;
     if (!amount) {
-      showError(amountEl, 'Amount is required');
-
+      showError(amountEl, "Amount is required");
     } else if (amount <= 0) {
       showError(amountEl, "Amount can't be negative or zero");
     } else {
@@ -134,73 +203,69 @@
       valid = true;
     }
 
-    return valid
-  }
+    return valid;
+  };
 
-  addMoneyForm = document.querySelector('#addMoneyForm')
-  addMoneyForm.addEventListener('submit', async (e) => {
-    e.preventDefault()
-    const amount = document.querySelector('#amount').value
-    const note = document.querySelector('#note').value
+  addMoneyForm = document.querySelector("#addMoneyForm");
+  addMoneyForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const amount = document.querySelector("#amount").value;
+    const note = document.querySelector("#note").value;
 
-    let valid = checkAmount()
+    let valid = checkAmount();
 
     if (valid) {
       Swal.fire({
-        icon: 'warning',
-        title: 'Are you sure?',
-        text: 'Do you want to add money to your wallet?',
+        icon: "warning",
+        title: "Are you sure?",
+        text: "Do you want to add money to your wallet?",
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes'
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes",
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
-            
-            const res = await fetch('/user/add-to-wallet', {
-              method: 'POST',
+            const res = await fetch("/user/add-to-wallet", {
+              method: "POST",
               headers: {
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json",
               },
               body: JSON.stringify({
                 amount,
-                note
-              }) // convert amount to a string
-            })
+                note,
+              }), // convert amount to a string
+            });
 
             console.log(res);
-            
-            const data = await res.json()
+
+            const data = await res.json();
             console.log(data);
             if (data.success) {
-              razorpayPayment(data.payment,data.user)
+              razorpayPayment(data.payment, data.user);
             } else {
               Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: data.message
-              })
+                icon: "error",
+                title: "Oops...",
+                text: data.message,
+              });
             }
           } catch (error) {
             console.log(error);
             Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: error.message 
-            })
+              icon: "error",
+              title: "Oops...",
+              text: error.message,
+            });
           }
         }
-      })
+      });
     }
-  })
+  });
 
-
-
-
-  const razorpayPayment = (order,user) => {
+  const razorpayPayment = (order, user) => {
     console.log(order);
-    let details = structuredClone(order)
+    let details = structuredClone(order);
     var options = {
       key: "rzp_test_EL8MknNoOtmLva",
       amount: order.amount,
@@ -208,9 +273,9 @@
       name: "SoleStride",
       description: "Test Transaction",
       order_id: order.id,
-      handler: async function(response) {
+      handler: async function (response) {
         console.log(response, order);
-        await verifyPayment(response, order)
+        await verifyPayment(response, order);
       },
       prefill: {
         name: user.username,
@@ -227,29 +292,28 @@
 
     var rzp1 = new Razorpay(options);
     rzp1.open();
-    rzp1.on("payment.failed", function(response) {
+    rzp1.on("payment.failed", function (response) {
       swal.fire("Failed!", response.error.description, "error").then(() => {
         location.assign("/");
       });
     });
-  }
+  };
 
   const verifyPayment = async (response, order) => {
-
     console.log(response, order);
     const res = await fetch("/user/verify-wallet-payment", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          response,
-          order
-        }),
-      })
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        response,
+        order,
+      }),
+    })
       .then((response) => {
         console.log(response);
-        return response.json()
+        return response.json();
       })
       .then((data) => {
         console.log(data);
@@ -257,27 +321,28 @@
           Swal.fire({
             icon: "success",
             title: "Success",
-            text: data.message
+            text: data.message,
           }).then(() => {
             location.assign("/user/wallet");
-          })
+          });
         } else {
           Swal.fire({
             icon: "error",
             title: "Error",
-            text: data.message
-          })
+            text: data.message,
+          });
         }
-      }).catch((error) => {
+      })
+      .catch((error) => {
         console.log(error);
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: error.message
-        })
+          text: error.message,
+        });
       });
 
-    const data = await res.json()
+    const data = await res.json();
 
     console.log(data);
     if (data.success) {

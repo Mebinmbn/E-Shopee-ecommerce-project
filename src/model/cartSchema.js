@@ -46,6 +46,10 @@ const cartSchema = new mongoose.Schema(
     totalPrice: {
       type: Number,
     },
+    deliveryCharge: {
+      type: Number,
+      min: 0,
+    },
     coupon: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Coupon",

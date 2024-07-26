@@ -27,7 +27,7 @@
   <h1 class="h2"><%= locals.title ? locals.title : 'Order Returns' %></h1>
   <header class="text-center mb-20">
     <form action="/admin/returns/" method="get" class="d-inline">
-      <div
+      <!-- <div
         class="input-group input-group-sm border bg-primary rounded-pill"
         style="width: 500px"
       >
@@ -43,7 +43,7 @@
         >
           Search
         </button>
-      </div>
+      </div> -->
     </form>
   </header>
   <!-- <div class="btn-toolbar mb-2 mb-md-0">
@@ -114,7 +114,7 @@
               <button
                 type="button"
                 class="btn btn-success"
-                onclick="approveReturn( '<%= element.order_id._id %>' ,'<%= element.variant %>', '<%= element.item_id %>', '<%= element._id %>')"
+                onclick="approveReturn( '<%= element.order_id._id %>' ,'<%= element.variant %>', '<%= element.item_id %>','<%= element.product_id._id %>' , '<%= element._id %>')"
               >
                 Approve
               </button>
@@ -196,7 +196,7 @@
 </section>
 
 <script defer>
-  const approveReturn = (order_id, variant, item_id, id) => {
+  const approveReturn = (order_id, variant, item_id, product_id, id) => {
     console.log(order_id, variant, item_id, id);
 
     Swal.fire({
@@ -219,6 +219,7 @@
               order_id,
               variant,
               item_id,
+              product_id,
               id,
             }),
           });

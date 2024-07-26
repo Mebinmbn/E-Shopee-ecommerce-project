@@ -130,6 +130,7 @@ const orderSchema = new Schema(
       required: true,
       min: 0,
     },
+
     coupon: {
       type: ObjectId,
       ref: "Coupon",

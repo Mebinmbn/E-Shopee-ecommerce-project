@@ -176,6 +176,8 @@ module.exports = {
       totalPriceBeforeOffer += prod.price;
     }
 
+    totalPrice += userCart.deliveryCharge;
+
     // for (let prod of userCart.items) {
     //   prod.price = prod.product_id.sellingPrice * prod.quantity;
     //   totalPrice += prod.price; // Calculate total price
@@ -194,6 +196,7 @@ module.exports = {
       ) {
         couponDiscount = totalPrice * (coupon.rateOfDiscount / 100);
         totalPrice -= couponDiscount;
+        totalPrice = Math.round(totalPrice);
       } else {
         // If the total is less than the minimum purchase amount, remove the coupon
         userCart.coupon = undefined;
@@ -249,6 +252,7 @@ module.exports = {
       userCart,
       isCOD,
       cartList: userCart.items,
+      deliveryCharge: userCart.deliveryCharge,
       cartCount,
       coupons,
       totalPrice,
