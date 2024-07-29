@@ -20,6 +20,7 @@ router.use(isLoggedIn, (req, res, next) => {
 });
 
 router.get("/", checkoutController.getCheckout);
+router.post("/continue-checkout", checkoutController.continueCheckout);
 
 router.post("/verify-coupon", couponController.applyCoupon);
 router.post("/remove-coupon", couponController.removeCoupon);

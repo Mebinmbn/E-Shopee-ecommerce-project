@@ -90,6 +90,7 @@ const orderSchema = new Schema(
       },
     ],
     shippingAddress: {
+      _id: { type: ObjectId },
       name: {
         type: String,
       },

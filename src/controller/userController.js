@@ -359,7 +359,7 @@ module.exports = {
       title: "E-Shopee - User Wallet",
     };
 
-    let perPage = 7;
+    let perPage = 14;
     let page = req.query.page || 1;
 
     let user = await User.findById(req.user.id);
@@ -371,8 +371,12 @@ module.exports = {
     let start = perPage * (page - 1);
     let end = start + perPage;
 
+    console.log("start: ", start);
+    console.log("end: ", end);
+
     let reversedTransactions = walletDetails.transactions.reverse();
-    let paginatedTransations = reversedTransactions.splice(start, end);
+    let paginatedTransations = reversedTransactions.slice(start, end);
+    console.log(paginatedTransations.length);
 
     let userWallet = {
       balance: walletDetails.balance,

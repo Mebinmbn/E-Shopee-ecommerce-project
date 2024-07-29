@@ -67,7 +67,7 @@ module.exports = {
     }
 
     // orderDetails = orderDetails.reverse();
-    // console.log(orderDetails[0]);
+    console.log(orderDetails[0]);
 
     const count = await Order.countDocuments({ customer_id: user._id });
     // const order = await Order.find({ customer_id: user._id });
@@ -83,6 +83,7 @@ module.exports = {
       currentRoute: "/user/orders/",
     });
   },
+
   getSingleOrder: async (req, res) => {
     const { orderId } = req.params;
     const user = await User.findById(req.user.id);
@@ -144,6 +145,8 @@ module.exports = {
           },
         },
       ]);
+
+      console.log("order details ", orderDetails);
 
       // find if user already added a review
 
@@ -294,6 +297,7 @@ module.exports = {
       // console.log(orderDetails);
       res.render("user/order", {
         orderDetails,
+        orderID: order_id,
         user,
       });
     } catch (error) {
@@ -573,6 +577,7 @@ module.exports = {
         "items.orderID": itemId,
       });
       console.log(updateOrder, variant);
+
       for (const item of updateOrder.items) {
         const product = await Product.findById(item.product_id);
         if (product) {
