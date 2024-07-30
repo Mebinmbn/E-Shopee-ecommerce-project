@@ -253,4 +253,8 @@ router.get("/sales-report/excel", reportsController.salesReportExcel);
 router.get("/sales-report/pdf-download", reportsController.getSalesReportPdf);
 router.get("/sales-report/pdf", reportsController.salesReportPdf);
 
+// ledger book
+
+router.get("/ledger-book", adminController.getLedger);
+
 module.exports = router;

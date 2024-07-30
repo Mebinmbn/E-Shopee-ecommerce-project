@@ -98,6 +98,7 @@ module.exports = {
   },
   deleteBanner: async (req, res) => {
     const id = req.query.id;
+    console.log(id);
     const image = req.query.image;
     // delete banner image from file
     fs.unlink(`./public/uploads/banners/${image}`, (err) => {

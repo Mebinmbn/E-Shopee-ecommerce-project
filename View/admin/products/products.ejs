@@ -105,7 +105,7 @@
             </a>
             <button
               class="btn btn-danger btn-sm"
-              onclick="deleteProduct('<%- product._id %>')"
+              onclick="deleteProduct('<%- product._id %>','<%- product.product_name %>')"
             >
               <i class="bi bi-trash"></i>
             </button>
@@ -256,9 +256,9 @@
           });
         } else {
           Swal.fire({
-            title: "Error!",
+            title: "Success!",
             text: data.message || "Something went wrong.",
-            icon: "error",
+            icon: "success",
             timer: 1500,
           }).then((result) => {
             location.reload();

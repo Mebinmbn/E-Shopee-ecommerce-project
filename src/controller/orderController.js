@@ -478,16 +478,13 @@ module.exports = {
   // },
 
   // Cancel and Return
+
   cancelOrder: async (req, res) => {
     try {
-      console.log(req.params);
       const { id, itemId, variant } = req.params;
-
-      let pvar = variant.toString();
+      const pvar = variant.toString();
 
       const order = await Order.findOne({ _id: id, "items.orderID": itemId });
-
-      console.log(order);
 
       if (!order) {
         return res.status(404).json({ message: "Order not found." });
@@ -502,43 +499,27 @@ module.exports = {
           },
         },
         { new: true }
-      ); // Use the { new: true } option to return the updated document
+      );
 
-      console.log(updatedOrder);
       if (!updatedOrder) {
         return res.status(500).json({ message: "Failed to cancel order." });
       }
-
-      // If payment is done using wallet or online add the amount back to the user's wallet
 
       if (
         order.paymentMethod === "Wallet" ||
         order.paymentMethod === "Online"
       ) {
-        let price = await Order.aggregate([
+        const price = await Order.aggregate([
           {
             $match: {
               _id: new mongoose.Types.ObjectId(id),
               "items.orderID": itemId,
             },
           },
-          {
-            $unwind: "$items",
-          },
-          {
-            $match: {
-              "items.orderID": itemId,
-            },
-          },
-          {
-            $project: {
-              _id: 0,
-              itemTotal: "$items.itemTotal",
-            },
-          },
+          { $unwind: "$items" },
+          { $match: { "items.orderID": itemId } },
+          { $project: { _id: 0, itemTotal: "$items.itemTotal" } },
         ]);
-
-        console.log(price);
 
         const wallet = await Wallet.findOne({ userId: req.user.id });
 
@@ -558,9 +539,7 @@ module.exports = {
 
           await newWallet.save();
         } else {
-          wallet.balance =
-            parseInt(wallet.balance) + parseInt(price[0].itemTotal);
-
+          wallet.balance += parseInt(price[0].itemTotal);
           wallet.transactions.push({
             date: new Date(),
             amount: parseInt(price[0].itemTotal),
@@ -576,26 +555,23 @@ module.exports = {
         _id: id,
         "items.orderID": itemId,
       });
-      console.log(updateOrder, variant);
 
       for (const item of updateOrder.items) {
+        console.log(item);
         const product = await Product.findById(item.product_id);
+        console.log(product);
         if (product) {
-          const variantIndex = product.variants.findIndex(
-            (variant) => variant._id.toString() === pvar
-          );
+          // const variantIndex = product.variants.findIndex(
+          //   (variant) => variant._id.toString() == pvar
+          // );
 
-          if (variantIndex === -1) {
-            return res.status(404).json({ error: "Variant not found" });
-          }
+          // if (variantIndex === -1) {
+          //   console.log("variant not found");
+          //   return res.status(404).json({ error: "Variant not found" });
+          // }
 
-          console.log(product.variants[variantIndex]);
-
-          product.variants[variantIndex].stock += item.quantity;
-
-          console.log(product.variants[variantIndex]);
-          // product.stock += item.quantity; // Increment the quantity of the product
-          await product.save(); // Save the updated product
+          product.variants[0].stock += item.quantity;
+          await product.save();
         }
       }
 
@@ -608,6 +584,7 @@ module.exports = {
       res.status(500).json({ message: "Server error." });
     }
   },
+
   cancelAllOrders: async (req, res) => {
     try {
       const { orderId } = req.params;

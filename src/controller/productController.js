@@ -10,6 +10,7 @@ const Category = require("../model/categorySchema");
 const Color = require("../model/attributes/colorSchema");
 const Size = require("../model/attributes/sizeSchema");
 const Brands = require("../model/attributes/brandSchema");
+const Ledger = require("../model/ledgerSchema");
 
 const marked = require("marked");
 const createDOMPurify = require("dompurify");
@@ -191,6 +192,61 @@ module.exports = {
       });
 
       await product.save();
+      let stock = 0;
+      for (let variant of variants) {
+        stock += variant.stock;
+      }
+      let actualPrice = req.body.actualPrice;
+
+      let buyingPrice = actualPrice - actualPrice * 0.25;
+
+      let amount = stock * buyingPrice;
+
+      console.log(
+        "stock:",
+        stock,
+        "actual price: ",
+        actualPrice,
+        "buyig price: ",
+        buyingPrice,
+        "amount: ",
+        amount
+      );
+
+      try {
+        // Fetch the current balance from the Ledger
+        const ledger = await Ledger.findOne({}); // Assuming only one ledger document
+
+        // Check if the ledger was found
+        if (!ledger) {
+          throw new Error("Ledger not found");
+        }
+
+        // Calculate the new balance
+        const newBalance = ledger.balance - amount;
+
+        // Update the Ledger document
+        await Ledger.updateOne(
+          {},
+          {
+            $inc: { balance: -amount },
+            $push: {
+              transactions: {
+                date: new Date(),
+                amount: buyingPrice,
+                message: "Product Purchase",
+                type: "Debit",
+                cBalance: newBalance, // Add cBalance to the transaction
+              },
+            },
+          }
+        );
+
+        console.log("Ledger update successful");
+      } catch (error) {
+        console.error("Error updating ledger:", error);
+      }
+
       // Example response for successful creation
       res.status(200).json({
         success: true,
@@ -398,10 +454,13 @@ module.exports = {
       res.status(500).json({ message: "Internal server error" });
     }
   },
+
   updateStock: async (req, res) => {
     try {
       console.log(req.body);
       const { variantId, stock } = req.body;
+
+      console.log("stock: ", stock);
 
       // First, check if the product and variant exist
       const product = await Product.findOne({ "variants._id": variantId });
@@ -409,6 +468,52 @@ module.exports = {
         return res
           .status(404)
           .json({ message: "Product or variant not found." });
+      }
+
+      const findVariantStock = (product, variantId) => {
+        const variant = product.variants.find((v) => v._id.equals(variantId));
+        return variant ? variant.stock : null;
+      };
+
+      const oldStock = findVariantStock(product, variantId);
+      console.log(oldStock);
+
+      let newStock = stock - oldStock;
+      let buyingPrice = product.actualPrice - product.actualPrice * 0.25;
+      amount = newStock * buyingPrice;
+
+      try {
+        // Fetch the current balance from the Ledger
+        const ledger = await Ledger.findOne({}); // Assuming only one ledger document
+
+        // Check if the ledger was found
+        if (!ledger) {
+          throw new Error("Ledger not found");
+        }
+
+        // Calculate the new balance
+        const newBalance = ledger.balance - amount;
+
+        // Update the Ledger document
+        await Ledger.updateOne(
+          {},
+          {
+            $inc: { balance: -amount },
+            $push: {
+              transactions: {
+                date: new Date(),
+                amount: buyingPrice,
+                message: "Product Purchase",
+                type: "Debit",
+                cBalance: newBalance, // Add cBalance to the transaction
+              },
+            },
+          }
+        );
+
+        console.log("Ledger update successful");
+      } catch (error) {
+        console.error("Error updating ledger:", error);
       }
 
       // Attempt to update the stock
@@ -476,7 +581,7 @@ module.exports = {
       res.status(200).json({ message: "Product deleted successfully" });
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: "Server error" });
+      res.status(200).json({ message: "Server error" });
     }
   },
 

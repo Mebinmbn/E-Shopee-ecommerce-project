@@ -6,6 +6,7 @@ const Product = require("../model/productSchema");
 const Payment = require("../model/paymentSchema");
 const Wallet = require("../model/walletSchema");
 const Coupon = require("../model/couponSchema");
+const Ledger = require("../model/ledgerSchema");
 
 const mongoose = require("mongoose");
 require("dotenv").config();
@@ -343,6 +344,40 @@ module.exports = {
               }
             );
 
+            try {
+              // Fetch the current balance from the Ledger
+              const ledger = await Ledger.findOne({}); // Assuming only one ledger document
+
+              // Check if the ledger was found
+              if (!ledger) {
+                throw new Error("Ledger not found");
+              }
+
+              // Calculate the new balance
+              const newBalance = ledger.balance + order.payable;
+
+              // Update the Ledger document
+              await Ledger.updateOne(
+                {}, // No filter needed since there's only one ledger
+                {
+                  $inc: { balance: order.payable },
+                  $push: {
+                    transactions: {
+                      date: new Date(),
+                      amount: order.payable,
+                      message: "Product Sold",
+                      type: "Credit",
+                      cBalance: newBalance, // Add cBalance to the transaction
+                    },
+                  },
+                }
+              );
+
+              console.log("Update successful");
+            } catch (error) {
+              console.error("Error updating ledger:", error);
+            }
+
             return res.status(200).json({
               success: true,
               message: "Order has been placed successfully.",
@@ -401,6 +436,39 @@ module.exports = {
               });
 
               await wallet.save();
+              try {
+                // Fetch the current balance from the Ledger
+                const ledger = await Ledger.findOne({}); // Assuming only one ledger document
+
+                // Check if the ledger was found
+                if (!ledger) {
+                  throw new Error("Ledger not found");
+                }
+
+                // Calculate the new balance
+                const newBalance = ledger.balance + order.payable;
+
+                // Update the Ledger document
+                await Ledger.updateOne(
+                  {}, // No filter needed since there's only one ledger
+                  {
+                    $inc: { balance: order.payable },
+                    $push: {
+                      transactions: {
+                        date: new Date(),
+                        amount: order.payable,
+                        message: "Product Sold",
+                        type: "Credit",
+                        cBalance: newBalance, // Add cBalance to the transaction
+                      },
+                    },
+                  }
+                );
+
+                console.log("Update successful");
+              } catch (error) {
+                console.error("Error updating ledger:", error);
+              }
 
               // reduce stock of the variant
               for (const item of order.items) {
@@ -614,6 +682,39 @@ module.exports = {
                     .json({ error: "Failed to update product stock" });
                 });
               }
+              try {
+                // Fetch the current balance from the Ledger
+                const ledger = await Ledger.findOne({}); // Assuming only one ledger document
+
+                // Check if the ledger was found
+                if (!ledger) {
+                  throw new Error("Ledger not found");
+                }
+
+                // Calculate the new balance
+                const newBalance = ledger.balance + order.payable;
+
+                // Update the Ledger document
+                await Ledger.updateOne(
+                  {}, // No filter needed since there's only one ledger
+                  {
+                    $inc: { balance: order.payable },
+                    $push: {
+                      transactions: {
+                        date: new Date(),
+                        amount: order.payable,
+                        message: "Product Sold",
+                        type: "Credit",
+                        cBalance: newBalance, // Add cBalance to the transaction
+                      },
+                    },
+                  }
+                );
+
+                console.log("Update successful");
+              } catch (error) {
+                console.error("Error updating ledger:", error);
+              }
 
               await Cart.clearCart(req.user.id).catch((error) => {
                 console.error(error);
@@ -685,6 +786,40 @@ module.exports = {
               });
 
               await wallet.save();
+
+              try {
+                // Fetch the current balance from the Ledger
+                const ledger = await Ledger.findOne({}); // Assuming only one ledger document
+
+                // Check if the ledger was found
+                if (!ledger) {
+                  throw new Error("Ledger not found");
+                }
+
+                // Calculate the new balance
+                const newBalance = ledger.balance + order.payable;
+
+                // Update the Ledger document
+                await Ledger.updateOne(
+                  {}, // No filter needed since there's only one ledger
+                  {
+                    $inc: { balance: order.payable },
+                    $push: {
+                      transactions: {
+                        date: new Date(),
+                        amount: order.payable,
+                        message: "Product Sold",
+                        type: "Credit",
+                        cBalance: newBalance, // Add cBalance to the transaction
+                      },
+                    },
+                  }
+                );
+
+                console.log("Update successful");
+              } catch (error) {
+                console.error("Error updating ledger:", error);
+              }
 
               // reduce stock of the variant
               for (const item of userCart.items) {
@@ -877,6 +1012,39 @@ module.exports = {
           }
         }
 
+        try {
+          // Fetch the current balance from the Ledger
+          const ledger = await Ledger.findOne({}); // Assuming only one ledger document
+
+          // Check if the ledger was found
+          if (!ledger) {
+            throw new Error("Ledger not found");
+          }
+
+          // Calculate the new balance
+          const newBalance = ledger.balance + order.payable;
+
+          // Update the Ledger document
+          await Ledger.updateOne(
+            {}, // No filter needed since there's only one ledger
+            {
+              $inc: { balance: order.payable },
+              $push: {
+                transactions: {
+                  date: new Date(),
+                  amount: order.payable,
+                  message: "Product Sold",
+                  type: "Credit",
+                  cBalance: newBalance, // Add cBalance to the transaction
+                },
+              },
+            }
+          );
+
+          console.log("Update successful");
+        } catch (error) {
+          console.error("Error updating ledger:", error);
+        }
         req.session.order = {
           status: true,
         };

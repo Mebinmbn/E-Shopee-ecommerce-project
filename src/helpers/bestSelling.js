@@ -88,6 +88,10 @@ module.exports = {
         $unwind: "$brand",
       },
       {
+        $sort: { count: -1 },
+      },
+      { $limit: 10 },
+      {
         $project: {
           _id: 1,
           count: 1,

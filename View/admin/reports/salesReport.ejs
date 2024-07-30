@@ -25,7 +25,7 @@
 
   <div class="d-flex align-items-center gap-2">
     <div class="btn-toolbar mb-2 mb-md-0">
-      <form class="d-flex" method="get">
+      <form class="d-flex" method="get" onsubmit="return validateDates()">
         <div class="d-flex align-items-center gap-2">
           <div class="form-group">
             <label for="startDate">From</label>
@@ -262,6 +262,17 @@
         para.textContent = ""; // Clear the paragraph if no valid option is selected
         break;
     }
+  }
+
+  function validateDates() {
+    const startDate = document.getElementById("startDate").value;
+    const endDate = document.getElementById("endDate").value;
+
+    if (new Date(endDate) < new Date(startDate)) {
+      alert("End date cannot be earlier than start date.");
+      return false;
+    }
+    return true;
   }
 </script>
 

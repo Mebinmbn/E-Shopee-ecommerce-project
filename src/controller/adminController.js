@@ -3,6 +3,7 @@ const User = require("../model/userSchema");
 const Product = require("../model/productSchema");
 const Orders = require("../model/orderSchema");
 const bestSelling = require("../helpers/bestSelling");
+const Ledger = require("../model/ledgerSchema");
 
 module.exports = {
   getDashboard: async (req, res) => {
@@ -447,5 +448,49 @@ module.exports = {
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
+  },
+
+  getLedger: async (req, res) => {
+    const locals = {
+      title: "E-Shopee - Ledger Book",
+    };
+
+    let perPage = 10;
+    let page = req.query.page || 1;
+
+    let ledgerDetails = await Ledger.findOne({});
+
+    let count = ledgerDetails.transactions.length;
+    console.log(count);
+
+    let start = perPage * (page - 1);
+    let end = start + perPage;
+
+    console.log("start: ", start);
+    console.log("end: ", end);
+
+    let reversedTransactions = ledgerDetails.transactions.reverse();
+    let paginatedTransations = reversedTransactions.slice(start, end);
+    console.log(paginatedTransations.length);
+
+    let ledgerBook = {
+      balance: ledgerDetails.balance,
+      transactions: paginatedTransations,
+    };
+
+    console.log(ledgerBook);
+
+    const nextPage = parseInt(page) + 1;
+    const hasNextPage = nextPage <= Math.ceil(count / perPage);
+
+    // console.log(userWallet);
+    res.render("admin/ledgerBook", {
+      locals,
+      ledgerBook,
+      current: page,
+      pages: Math.ceil(count / perPage),
+      nextPage: hasNextPage ? nextPage : null,
+      layout: adminLayout,
+    });
   },
 };
