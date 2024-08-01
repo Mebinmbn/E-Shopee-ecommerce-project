@@ -123,7 +123,7 @@ app.use("/checkout", checkoutRouter);
 
 const PORT = process.env.PORT;
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on ${process.env.DEV_MODE} on port ${PORT}`);
 });
 
