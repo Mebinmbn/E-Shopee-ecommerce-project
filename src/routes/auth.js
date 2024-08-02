@@ -69,12 +69,10 @@ router.get(
 router.get(
   "/auth/google/callback",
   passport.authenticate("google", {
-    successRedirect: "/",
-    failureRedirect: "/login",
-  }),
-  (req, res, next) => {
-    res.redirect("/login");
-  }
+    successRedirect: "/",  // Redirect to home on successful login
+    failureRedirect: "/login",  // Redirect to login on failure
+  })
 );
+
 
 module.exports = router;
