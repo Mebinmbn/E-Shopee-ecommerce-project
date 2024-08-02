@@ -106,7 +106,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
-      callbackURL: "/auth/google/callback",
+      callbackURL: "http://www.mebin.live/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       // Check if the user already exists in the database
