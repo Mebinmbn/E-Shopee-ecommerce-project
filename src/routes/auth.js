@@ -67,7 +67,7 @@ router.get(
 );
 
 router.get(
-  "http://www.mebin.live/auth/google/callback",
+  "/auth/google/callback",
   passport.authenticate("google", {
     successRedirect: "/",
     failureRedirect: "/login",
