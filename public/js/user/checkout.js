@@ -569,3 +569,4 @@ form.addEventListener(
     }
   })
 );
+module.export = debounce;
