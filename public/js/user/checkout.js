@@ -514,7 +514,7 @@ const verifyPayment = async (response) => {
   }
 };
 
-function debounce  (fn, delay = 50) => {
+function debounce  (fn, delay = 50)  {
   let timeoutId;
   return (...args) => {
     // cancel the previous timer
