@@ -217,23 +217,11 @@ const debounce = (fn, delay = 50) => {
   };
 };
 
-const debounceOne = (fn, delay = 50) => {
-  let timeoutId;
-  return (...args) => {
-    // cancel the previous timer
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
-    // setup a new timer
-    timeoutId = setTimeout(() => {
-      fn.apply(null, args);
-    }, delay);
-  };
-};
+
 
 editForm.addEventListener(
   "input",
-  debounceOne((e) => {
+  debounce((e) => {
     switch (e.target.id) {
       case "edit-address-fn": // Full name
         checkEditName();
