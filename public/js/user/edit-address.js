@@ -204,44 +204,45 @@ editForm.addEventListener("submit", function (e) {
 
 
 
-editForm.addEventListener(
-  "input",(e) => {
- 
-    switch (e.target.id) {
-      case "edit-address-fn": // Full name
-        checkEditName();
-        break;
-      case "edit-address-ln": // Phone
-        checkEditPhone();
-        break;
-      case "edit-address-house-name": // House Name
-        checkEditHouseName();
-        break;
-      case "edit-address-area": // Area/Street
-        checkEditAreaStreet();
-        break;
-      case "edit-address-locality": // Locality
-        checkEditLocality();
-        break;
-      case "edit-address-town": // Town
-        checkEditTown();
-        break;
-      case "edit-address-state": // State
-        checkEditState();
-        break;
-      case "edit-address-zip": // ZIP code
-        checkEditZipcode();
-        break;
-      case "edit-address-landmark": // Landmark
-        checkEditLandmark();
-        break;
-      case "edit-alternate-phone": // Alternate Phone
-        checkEditAlternatePhone();
-        break;
-      // Assuming there's a function to check the address type, if needed
-      case "edit-form-check": // Address Type
-        checkAddressType();
-        break;
-    }
-  
-)
+editForm.addEventListener("input", (e) => {
+  // Check which element triggered the event
+  switch (e.target.id) {
+    case "edit-address-fn": // Full name
+      checkEditName();
+      break;
+    case "edit-address-ln": // Phone
+      checkEditPhone();
+      break;
+    case "edit-address-house-name": // House Name
+      checkEditHouseName();
+      break;
+    case "edit-address-area": // Area/Street
+      checkEditAreaStreet();
+      break;
+    case "edit-address-locality": // Locality
+      checkEditLocality();
+      break;
+    case "edit-address-town": // Town
+      checkEditTown();
+      break;
+    case "edit-address-state": // State
+      checkEditState();
+      break;
+    case "edit-address-zip": // ZIP code
+      checkEditZipcode();
+      break;
+    case "edit-address-landmark": // Landmark
+      checkEditLandmark();
+      break;
+    case "edit-alternate-phone": // Alternate Phone
+      checkEditAlternatePhone();
+      break;
+    case "edit-form-check": // Address Type
+      checkAddressType();
+      break;
+    default:
+      // Optional: handle unexpected cases if needed
+      break;
+  }
+});
+
