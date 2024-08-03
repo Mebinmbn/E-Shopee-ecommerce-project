@@ -243,5 +243,5 @@ editForm.addEventListener(
         checkAddressType();
         break;
     }
-  })
+  
 );
