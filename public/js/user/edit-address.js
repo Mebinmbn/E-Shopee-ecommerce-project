@@ -1,4 +1,3 @@
- 
 const editForm = document.querySelector("#edit-address-form");
 
 const checkEditName = () => {
@@ -202,20 +201,6 @@ editForm.addEventListener("submit", function (e) {
     editForm.submit();
   }
 });
-
-const debounce = (fn, delay = 50) => {
-  let timeoutId;
-  return (...args) => {
-    // cancel the previous timer
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
-    // setup a new timer
-    timeoutId = setTimeout(() => {
-      fn.apply(null, args);
-    }, delay);
-  };
-};
 
 
 
