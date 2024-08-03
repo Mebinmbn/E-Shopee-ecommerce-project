@@ -514,7 +514,7 @@ const verifyPayment = async (response) => {
   }
 };
 
-function debounce = (fn, delay = 50) => {
+const debounce = (fn, delay = 50) => {
   let timeoutId;
   return (...args) => {
     // cancel the previous timer
@@ -569,4 +569,3 @@ form.addEventListener(
     }
   })
 );
-module.exports = debounce;
