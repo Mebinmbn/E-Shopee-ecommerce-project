@@ -205,7 +205,7 @@ editForm.addEventListener("submit", function (e) {
 
 
 editForm.addEventListener(
-  "input",
+  "input",(e) => {
  
     switch (e.target.id) {
       case "edit-address-fn": // Full name
@@ -242,6 +242,6 @@ editForm.addEventListener(
       case "edit-form-check": // Address Type
         checkAddressType();
         break;
-    
+    }
   })
 );
