@@ -569,3 +569,5 @@ form.addEventListener(
     }
   })
 );
+
+window.debounce = debounce;
