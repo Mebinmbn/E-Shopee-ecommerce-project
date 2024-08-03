@@ -3,6 +3,7 @@ const Banner = require("../model/bannerSchema");
 const Category = require("../model/categorySchema");
 const Brand = require("../model/attributes/brandSchema");
 const Product = require("../model/productSchema");
+const Address = require("../model/addressSchema");
 const logger = require("../config/logger");
 const { name } = require("ejs");
 
