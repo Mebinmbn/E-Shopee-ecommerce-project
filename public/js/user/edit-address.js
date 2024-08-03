@@ -1,4 +1,4 @@
-const debounce = require("../public/js/user/checkout.js");
+ debounce = require("../public/js/user/checkout.js");
 const editForm = document.querySelector("#edit-address-form");
 
 const checkEditName = () => {
