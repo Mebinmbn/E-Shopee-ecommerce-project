@@ -331,7 +331,8 @@ const debounce = (fn, delay = 500) => {
 };
 
 form.addEventListener(
-  "input",(e) => {
+  "input",
+  debounce(function (e) {
     switch (e.target.id) {
       case "address-fn": // Assuming this is the full name field
         checkName();
