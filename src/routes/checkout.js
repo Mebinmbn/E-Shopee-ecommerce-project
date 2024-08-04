@@ -25,7 +25,7 @@ router.post("/continue-checkout", checkoutController.continueCheckout);
 router.post("/verify-coupon", couponController.applyCoupon);
 router.post("/remove-coupon", couponController.removeCoupon);
 
-router.post("/add-address", shopController.addAddress);
+router.post("/addressAdd", shopController.addAddress);
 
 router
   .route("/edit-address/:id")
