@@ -129,7 +129,7 @@ module.exports = {
     res.redirect("/user/address");
   },
 
-  addChekoutAddress: async (req, res) => {
+  addCheckoutAddress: async (req, res) => {
     console.log(req.body);
     await Address.create(req.body);
     logger.info(`User ${req.user.email} added new address`);
