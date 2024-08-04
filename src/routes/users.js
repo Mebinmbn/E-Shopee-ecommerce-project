@@ -33,7 +33,7 @@ router.route("/reset-password").post(userController.resetPass);
 
 router.get("/address", userController.getAddress);
 router.post("/address/add-address", userController.addAddress);
-router.post("/address/add-checkoutaddress", userController.addCheckoutAddress);
+router.post("/address/add-checkoutaddress", userController.addAddress);
 router
   .route("/address/edit-address/:id")
   .get(userController.getEditAddress)
