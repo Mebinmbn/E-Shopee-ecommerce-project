@@ -328,7 +328,7 @@ module.exports = {
     });
   },
   addAddress: async (req, res) => {
-    console.log(req.body);
+    console.log("Reched here",req.body);
     await Address.create(req.body);
     req.flash("success", "Address Addedd");
     res.redirect("/checkout");
