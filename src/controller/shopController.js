@@ -328,10 +328,16 @@ module.exports = {
     });
   },
   addAddress: async (req, res) => {
-    console.log("Reched here",req.body);
-    await Address.create(req.body);
-    req.flash("success", "Address Addedd");
-    res.redirect("/checkout");
+    try {
+      console.log(req.body);
+      await Address.create(req.body);
+      req.flash("success", "Address Addedd");
+      res.redirect("/checkout");
+    } catch (error) {
+      console.error(error);
+      req.flash("error", "Error adding address. Please try again.");
+      res.redirect("/checkout");
+    }
   },
   editAddress: async (req, res) => {
     try {
